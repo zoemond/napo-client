@@ -1,17 +1,9 @@
 import * as React from "react";
 import { hot } from "react-hot-loader";
-import { Button } from "@material-ui/core";
+import { GameTablesPage } from "./game-tables/GameTables";
 
-class App extends React.Component<{}, undefined> {
-  render(): React.ReactNode {
-    return (
-      <Button variant="contained" color="primary">
-        hello material-ui
-      </Button>
-    );
-  }
-}
-
-declare let module: object;
+const App: React.FC = () => {
+  return <GameTablesPage />;
+};
 
 export default hot(module)(App);

@@ -16,5 +16,7 @@
     "node": true,
     "es6": true
   },
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/interface-name-prefix": 0
+  }
 }

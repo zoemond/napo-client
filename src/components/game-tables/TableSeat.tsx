@@ -21,6 +21,8 @@ export const TableSeat: React.FC<{
 }> = (props) => {
   const classes = useStyles();
   const name = props.name;
+  // TODO: 同時にフォーカスして座ったとき
+  // label廃止でvalue管理?
   return (
     <div className={classes.tableSeat}>
       <TextField

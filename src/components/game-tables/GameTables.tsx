@@ -10,21 +10,19 @@ const createGameTable = (): void => {
 };
 
 export const GameTablesPage: React.FC = () => {
-  const state = React.useContext<GameTablesState>(GameTablesContext);
-
   React.useEffect(() => {
     socket.emit("read_game_tables");
     console.log("emit read game tables");
   }, []);
-  const tables = state.gameTables;
 
+  const state = React.useContext<GameTablesState>(GameTablesContext);
   return (
     <div>
       <Button variant="contained" color="primary" onClick={createGameTable}>
         卓をたてる
       </Button>
-      {tables.map((table, i) => (
-        <TableSeats key={i} table={table} />
+      {state.gameTables.map((gameTable, i) => (
+        <TableSeats key={i} gameTable={gameTable} />
       ))}
     </div>
   );

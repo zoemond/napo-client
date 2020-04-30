@@ -5,6 +5,7 @@ import {
   GameTablesSuccessResponse,
 } from "../../response/GameTablesResponse";
 import { ErrorResponse } from "../../response/ErrorResponse";
+import GameTable from "../../domain/GameTable";
 
 function gameTablesReducer(
   state: GameTablesState,
@@ -16,7 +17,11 @@ function gameTablesReducer(
 
   return {
     ...state,
-    gameTables: (response as GameTablesSuccessResponse).gameTables,
+    gameTables: (response as GameTablesSuccessResponse).gameTables
+      .sort((a, b) => b.id - a.id)
+      .map((gameTableObj) => {
+        return GameTable.from(gameTableObj);
+      }),
   };
 }
 

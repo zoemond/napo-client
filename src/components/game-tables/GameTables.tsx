@@ -12,9 +12,12 @@ export const GameTablesPage: React.FC = () => {
   const state = React.useContext<GameTablesState>(GameTablesContext);
 
   const tables = state.gameTables;
+  tables.forEach((table) => {
+    console.log("table: ", table);
+  });
   return (
     <Button variant="contained" color="primary" onClick={createGameTable}>
-      Create Game Table
+      卓をたてる
     </Button>
   );
 };

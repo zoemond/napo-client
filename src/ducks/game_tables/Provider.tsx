@@ -16,10 +16,12 @@ export const GameTablesProvider: React.FC = ({
     React.Reducer<GameTablesState, TGameTablesAction>
   >(reducer, store);
 
-  socket.on("game_tables", (response: GameTablesResponse) => {
-    console.log("dispatch", response);
-    dispatch({ type: "GAME_TABLES", payload: response });
-  });
+  React.useEffect(() => {
+    socket.on("game_tables", (response: GameTablesResponse) => {
+      console.log("dispatch", response);
+      dispatch({ type: "GAME_TABLES", payload: response });
+    });
+  }, []);
 
   return (
     <GameTablesContext.Provider value={state}>

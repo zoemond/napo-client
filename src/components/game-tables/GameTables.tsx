@@ -3,6 +3,7 @@ import { Button } from "@material-ui/core";
 import { socket } from "../../ducks/socket/socket";
 import { GameTablesState } from "../../ducks/game_tables/state";
 import { GameTablesContext } from "../../ducks/game_tables/Context";
+import { TableSeats } from "./TableSeats";
 
 const createGameTable = (): void => {
   socket.emit("create_game_table");
@@ -11,13 +12,20 @@ const createGameTable = (): void => {
 export const GameTablesPage: React.FC = () => {
   const state = React.useContext<GameTablesState>(GameTablesContext);
 
+  React.useEffect(() => {
+    socket.emit("read_game_tables");
+    console.log("emit read game tables");
+  }, []);
   const tables = state.gameTables;
-  tables.forEach((table) => {
-    console.log("table: ", table);
-  });
+
   return (
-    <Button variant="contained" color="primary" onClick={createGameTable}>
-      卓をたてる
-    </Button>
+    <div>
+      <Button variant="contained" color="primary" onClick={createGameTable}>
+        卓をたてる
+      </Button>
+      {tables.map((table, i) => (
+        <TableSeats key={i} table={table} />
+      ))}
+    </div>
   );
 };

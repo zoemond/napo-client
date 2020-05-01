@@ -1,6 +1,12 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import { CardContent, Card, Button, Divider } from "@material-ui/core";
+import {
+  CardContent,
+  Card,
+  Button,
+  Divider,
+  Typography,
+} from "@material-ui/core";
 import GameTable from "../../domain/GameTable";
 import { TableSeat } from "./TableSeat";
 
@@ -27,7 +33,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     sitDownButton: {
       display: "flex",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
+      alignItems: "center",
       marginTop: theme.spacing(1),
     },
   })
@@ -146,6 +153,7 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
         </div>
         <Divider light />
         <div className={classes.sitDownButton}>
+          <Typography variant="subtitle2">卓 {gameTable.id}</Typography>
           <Button
             variant="contained"
             color="primary"

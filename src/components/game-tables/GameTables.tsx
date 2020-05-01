@@ -1,14 +1,26 @@
 import * as React from "react";
-import { Button } from "@material-ui/core";
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Theme,
+  Container,
+} from "@material-ui/core";
 import { socket } from "../../ducks/socket/socket";
 import { GameTablesState } from "../../ducks/game_tables/state";
 import { GameTablesContext } from "../../ducks/game_tables/Context";
 import { TableSeats } from "./TableSeats";
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    createGame: {
+      margin: theme.spacing(1),
+    },
+  })
+);
 const createGameTable = (): void => {
   socket.emit("create_game_table");
 };
-
 export const GameTablesPage: React.FC = () => {
   React.useEffect(() => {
     socket.emit("read_game_tables");
@@ -16,14 +28,20 @@ export const GameTablesPage: React.FC = () => {
   }, []);
 
   const state = React.useContext<GameTablesState>(GameTablesContext);
+  const classes = useStyles();
   return (
-    <div>
-      <Button variant="contained" color="primary" onClick={createGameTable}>
+    <Container maxWidth="sm">
+      <Button
+        className={classes.createGame}
+        variant="contained"
+        color="primary"
+        onClick={createGameTable}
+      >
         卓をたてる
       </Button>
       {state.gameTables.map((gameTable, i) => (
         <TableSeats key={i} gameTable={gameTable} />
       ))}
-    </div>
+    </Container>
   );
 };

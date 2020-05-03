@@ -56,9 +56,6 @@ export const GamePage: React.FC = () => {
               x={120 + i * space}
               y={handsHight}
               interactive={true}
-              pointerup={(e: PIXI.interaction.InteractionEvent): void => {
-                console.log(e);
-              }}
               pointerdown={(e: PIXI.interaction.InteractionEvent): void => {
                 console.log(e);
               }}

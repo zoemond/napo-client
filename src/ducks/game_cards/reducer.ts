@@ -22,6 +22,7 @@ function gameCardsReducer(
     gameCards: new GameCards(
       gameCardsObj.gameTableId,
       gameCardsObj.open,
+      gameCardsObj.fieldCards,
       gameCardsObj.seatFirst,
       gameCardsObj.seatSecond,
       gameCardsObj.seatThird,

@@ -1,25 +1,34 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
+import * as storage from "../../localStorage/localStorage";
 import { socket } from "../socket/socket";
 import { GameCardsContext } from "./Context";
 import reducer from "./reducer";
-import { GameCardsState } from "./state";
+import { GameState } from "./state";
 import { TGameCardsAction } from "./types";
-import { GameCardsResponse } from "../../response/GameCardsResponse";
+import {
+  SeatsResponse,
+  SeatsSuccessResponse,
+} from "../../response/GameCardsResponse";
+import { MyGameContext } from "../my_game/Context";
 
 export const GameCardsProvider: React.FC = ({
   children,
 }): React.ReactElement => {
   const initialState = React.useContext(GameCardsContext);
   const [state, dispatch] = React.useReducer<
-    React.Reducer<GameCardsState, TGameCardsAction>
+    React.Reducer<GameState, TGameCardsAction>
   >(reducer, initialState);
 
+  const { gameTableId } = React.useContext(MyGameContext);
   React.useEffect(() => {
-    socket.on("game_cards", (response: GameCardsResponse) => {
+    socket.on("seats", (response: SeatsResponse) => {
       console.log("dispatch", response);
-      dispatch({ type: "GAME_CARDS", payload: response });
+      // TODO: 今の所すべてのゲームの状態がブロードキャストされてくるのでどうにかする
+      if ((response as SeatsSuccessResponse).gameTableId === gameTableId) {
+        dispatch({ type: "GAME_CARDS", payload: response });
+      }
     });
   }, []);
 

@@ -1,5 +1,5 @@
 import { MyGameState } from "../ducks/my_game/state";
-import { isSeatName } from "../components/game-tables/Seats";
+import { isSeatName } from "../domain/SeatName";
 
 function getItem(key: string): string {
   try {
@@ -24,14 +24,14 @@ function setItem(key: string, value?: string | number): void {
 
 export function getMyGame(): MyGameState {
   const gameTableId = parseInt(getItem("gameTableId"));
-  const seat = getItem("seat");
-  if (isNaN(gameTableId) || !isSeatName(seat)) {
+  const mySeatName = getItem("mySeatName");
+  if (isNaN(gameTableId) || !isSeatName(mySeatName)) {
     return new MyGameState();
   }
-  return new MyGameState({ gameTableId, seat });
+  return new MyGameState({ gameTableId, mySeatName });
 }
 
 export function setMyGame(game: MyGameState): void {
   setItem("gameTableId", game.gameTableId);
-  setItem("seat", game.seat);
+  setItem("mySeatName", game.mySeatName);
 }

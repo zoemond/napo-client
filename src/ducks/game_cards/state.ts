@@ -1,5 +1,5 @@
-import GameCards from "../../domain/GameCards";
+import { Seat } from "../../domain/Seat";
 
-export class GameCardsState {
-  gameCards: GameCards;
+export class GameState {
+  seats: Seat[];
 }

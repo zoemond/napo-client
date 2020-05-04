@@ -18,8 +18,8 @@ import {
 } from "../../ducks/my_game/Context";
 
 import { SIT_DOWN } from "../../ducks/my_game/types";
-import { Seats, SeatName } from "./Seats";
 import { MyGameState } from "../../ducks/my_game/state";
+import { SeatName } from "../../domain/SeatName";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,61 +43,66 @@ const useStyles = makeStyles((theme: Theme) =>
 const canSitDown = (
   myGame: MyGameState,
   gameTable: GameTable,
-  inputNames: Seats
+  inputPlayer: InputPlayer
 ): boolean => {
-  if (myGame.gameTableId && myGame.seat) {
+  if (myGame.gameTableId && myGame.mySeatName) {
     return false;
   }
-  if (Object.values(inputNames).filter((iName) => !!iName).length === 1) {
-    return true;
+  if (gameTable.isAllSitDown()) {
+    return false;
   }
-  return !gameTable.isAllSitDown();
+  return !!inputPlayer.inputName;
 };
 
 const canInput = (
   gameState: MyGameState,
-  seat: SeatName,
+  seatName: SeatName,
   gameTable: GameTable,
-  inputNames: Seats
+  inputPlayer: InputPlayer
 ): boolean => {
   if (gameState.isSitDown()) {
     return false;
   }
-  if (gameTable[seat]) {
+  if (gameTable.findPlayer(seatName).name) {
     return false;
   }
-  if (inputNames[seat]) {
+  if (!inputPlayer.seatName) {
     return true;
   }
-  return Object.values(inputNames).every((seat) => !seat);
+
+  return inputPlayer.seatName === seatName;
 };
 
+type InputPlayer = {
+  seatName?: SeatName;
+  inputName?: string;
+};
 export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
   gameTable,
 }) => {
   const classes = useStyles();
 
-  const [inputNames, setInputNames] = React.useState<Seats>({});
-  const onInput = (seat: SeatName) => (inputName: string): void => {
-    setInputNames({ [seat]: inputName });
+  const [inputPlayer, setInputPlayer] = React.useState<InputPlayer>({});
+  const onInput = (seatName: SeatName) => (inputName: string): void => {
+    setInputPlayer({ seatName, inputName });
   };
 
   const myGameState = React.useContext(MyGameContext);
   const dispatch = React.useContext(MyGameDispatchContext);
 
   const sitDown = (gameTableId: number): void => {
-    const [seat, playerName] = Object.entries(inputNames).find(
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      ([_, playerName]) => !!playerName
-    );
+    const seatName = inputPlayer.seatName;
     socket.emit("sit_down", {
       gameTableId,
-      seat,
-      playerName,
+      seatName,
+      playerName: inputPlayer.inputName,
     });
     dispatch({
       type: SIT_DOWN,
-      payload: new MyGameState({ gameTableId, seat: seat as SeatName }),
+      payload: new MyGameState({
+        gameTableId,
+        mySeatName: seatName as SeatName,
+      }),
     });
   };
 
@@ -107,47 +112,47 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
         <div>
           <div className={classes.seatRow}>
             <TableSeat
-              name={gameTable.seatFirst}
+              name={gameTable.firstPlayer().name}
               disabled={
-                !canInput(myGameState, "seatFirst", gameTable, inputNames)
+                !canInput(myGameState, "first_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("seatFirst")}
+              onInput={onInput("first_seat")}
             />
             <TableSeat
-              name={gameTable.seatSecond}
+              name={gameTable.secondPlayer().name}
               disabled={
-                !canInput(myGameState, "seatSecond", gameTable, inputNames)
+                !canInput(myGameState, "second_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("seatSecond")}
-            />
-          </div>
-        </div>
-        <div>
-          <div className={classes.seatRow}>
-            <TableSeat
-              name={gameTable.seatThird}
-              disabled={
-                !canInput(myGameState, "seatThird", gameTable, inputNames)
-              }
-              onInput={onInput("seatThird")}
-            />
-            <TableSeat
-              name={gameTable.seatFourth}
-              disabled={
-                !canInput(myGameState, "seatFourth", gameTable, inputNames)
-              }
-              onInput={onInput("seatFourth")}
+              onInput={onInput("second_seat")}
             />
           </div>
         </div>
         <div>
           <div className={classes.seatRow}>
             <TableSeat
-              name={gameTable.seatFifth}
+              name={gameTable.thirdPlayer().name}
               disabled={
-                !canInput(myGameState, "seatFifth", gameTable, inputNames)
+                !canInput(myGameState, "third_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("seatFifth")}
+              onInput={onInput("third_seat")}
+            />
+            <TableSeat
+              name={gameTable.fourthPlayer().name}
+              disabled={
+                !canInput(myGameState, "fourth_seat", gameTable, inputPlayer)
+              }
+              onInput={onInput("fourth_seat")}
+            />
+          </div>
+        </div>
+        <div>
+          <div className={classes.seatRow}>
+            <TableSeat
+              name={gameTable.fifthPlayer().name}
+              disabled={
+                !canInput(myGameState, "fifth_seat", gameTable, inputPlayer)
+              }
+              onInput={onInput("fifth_seat")}
             />
           </div>
         </div>
@@ -157,7 +162,7 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
           <Button
             variant="contained"
             color="primary"
-            disabled={!canSitDown(myGameState, gameTable, inputNames)}
+            disabled={!canSitDown(myGameState, gameTable, inputPlayer)}
             onClick={(): void => sitDown(gameTable.id)}
           >
             座る

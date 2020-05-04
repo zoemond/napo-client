@@ -1,41 +1,29 @@
-import { GameCardsState } from "./state";
+import { GameState } from "./state";
 import { TGameCardsAction, GAME_CARDS } from "./types";
 import {
-  GameCardsResponse,
-  GameCardsSuccessResponse,
+  SeatsResponse,
+  SeatsSuccessResponse,
 } from "../../response/GameCardsResponse";
 import { ErrorResponse } from "../../response/ErrorResponse";
-import GameCards from "../../domain/GameCards";
+import { Seat } from "../../domain/Seat";
 
 function gameCardsReducer(
-  state: GameCardsState,
-  response: GameCardsResponse
-): GameCardsState {
+  state: GameState,
+  response: SeatsResponse
+): GameState {
   if ((response as ErrorResponse).errorMessage) {
     // TODO: show error
     return state;
   }
 
-  const gameCardsObj = (response as GameCardsSuccessResponse).gameCards;
+  const seats = (response as SeatsSuccessResponse).seats;
   return {
     ...state,
-    gameCards: new GameCards(
-      gameCardsObj.gameTableId,
-      gameCardsObj.open,
-      gameCardsObj.fieldCards,
-      gameCardsObj.seatFirst,
-      gameCardsObj.seatSecond,
-      gameCardsObj.seatThird,
-      gameCardsObj.seatFourth,
-      gameCardsObj.seatFifth
-    ),
+    seats: seats.map((seat) => Seat.from(seat)),
   };
 }
 
-export default (
-  state: GameCardsState,
-  action: TGameCardsAction
-): GameCardsState => {
+export default (state: GameState, action: TGameCardsAction): GameState => {
   const response = action.payload;
   switch (action.type) {
     case GAME_CARDS:

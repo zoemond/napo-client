@@ -1,4 +1,4 @@
 import * as React from "react";
-import { GameCardsState } from "./state";
+import { GameState } from "./state";
 
-export const GameCardsContext = React.createContext(new GameCardsState());
+export const GameCardsContext = React.createContext(new GameState());

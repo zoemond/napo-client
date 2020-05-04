@@ -1,9 +1,9 @@
-import { GameCardsResponse } from "../../response/GameCardsResponse";
+import { SeatsResponse } from "../../response/GameCardsResponse";
 
 export const GAME_CARDS = "GAME_CARDS";
 class ReadGameCardsAction {
   type = GAME_CARDS;
-  payload: GameCardsResponse;
+  payload: SeatsResponse;
 }
 
 export type TGameCardsAction = ReadGameCardsAction;

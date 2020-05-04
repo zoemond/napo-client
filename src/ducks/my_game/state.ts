@@ -1,8 +1,8 @@
-import { SeatName } from "../../components/game-tables/Seats";
+import { SeatName } from "../../domain/SeatName";
 
 type MyGameProp = {
   gameTableId?: number;
-  seat?: SeatName;
+  mySeatName?: SeatName;
 };
 
 export class MyGameState {
@@ -11,12 +11,12 @@ export class MyGameState {
       return;
     }
     this.gameTableId = prop.gameTableId;
-    this.seat = prop.seat;
+    this.mySeatName = prop.mySeatName;
   }
   gameTableId?: number;
-  seat?: SeatName;
+  mySeatName?: SeatName;
 
   isSitDown(): boolean {
-    return !!(this.gameTableId && this.seat);
+    return !!(this.gameTableId && this.mySeatName);
   }
 }

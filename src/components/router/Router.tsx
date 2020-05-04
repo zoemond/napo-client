@@ -1,15 +1,10 @@
 import * as React from "react";
 import { GamePage } from "../game/Game";
-import {
-  MyGameContext,
-  MyGameDispatchContext,
-} from "../../ducks/my_game/Context";
+import { MyGameContext } from "../../ducks/my_game/Context";
 import { GameTablesContext } from "../../ducks/game_tables/Context";
 import { GameTablesPage } from "../game-tables/GameTables";
 import { MyGameState } from "../../ducks/my_game/state";
 import GameTable from "../../domain/GameTable";
-import { LEAVE_GAME } from "../../ducks/my_game/types";
-import { socket } from "../../ducks/socket/socket";
 import { GameCardsProvider } from "../../ducks/game_cards/Provider";
 
 const hasMyGame = (
@@ -17,7 +12,7 @@ const hasMyGame = (
   gameTables: GameTable[]
 ): boolean => {
   const gameTableId = gameState.gameTableId;
-  if (!gameState.gameTableId || !gameState.seat) {
+  if (!gameState.gameTableId || !gameState.mySeatName) {
     return false;
   }
   if (!gameTables || gameTables.length < 1) {

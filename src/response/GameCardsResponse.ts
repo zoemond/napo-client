@@ -1,8 +1,9 @@
-import GameCards from "../domain/GameCards";
 import { ErrorResponse } from "./ErrorResponse";
+import { Seat } from "../domain/Seat";
 
-export type GameCardsSuccessResponse = {
-  gameCards: GameCards;
+export type SeatsSuccessResponse = {
+  gameTableId: number;
+  seats: Seat[];
 };
 
-export type GameCardsResponse = ErrorResponse | GameCardsSuccessResponse;
+export type SeatsResponse = ErrorResponse | SeatsSuccessResponse;

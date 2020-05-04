@@ -1,0 +1,46 @@
+import Card from "./Card";
+import { SeatName, orderedSeatNames } from "./SeatName";
+import { Seat } from "./Seat";
+
+export default class MyGameSight {
+  private mySeat: Seat;
+  private leftSeat: Seat;
+  private frontLeftSeat: Seat;
+  private frontRightSeat: Seat;
+  private rightSeat: Seat;
+
+  constructor(mySeatName: SeatName, seats: Seat[]) {
+    const myIdx = seats.findIndex((seat) => seat.seatName === mySeatName);
+    this.mySeat = seats[myIdx];
+    this.leftSeat = this.findSeatNextTo(myIdx, 1, seats);
+    this.frontLeftSeat = this.findSeatNextTo(myIdx, 2, seats);
+    this.frontRightSeat = this.findSeatNextTo(myIdx, 3, seats);
+    this.rightSeat = this.findSeatNextTo(myIdx, 3, seats);
+  }
+
+  private findSeatNextTo(
+    baseIdx: number,
+    nextMeNum: number,
+    seats: Seat[]
+  ): Seat {
+    const idx = (baseIdx + nextMeNum) % orderedSeatNames.length;
+    const seatName = orderedSeatNames[idx];
+    return seats.find((seat) => seat.seatName === seatName);
+  }
+
+  myCards(): Card[] {
+    return this.mySeat.hands;
+  }
+  leftCard(): Card {
+    return this.leftSeat.playCard;
+  }
+  frontLeftCard(): Card {
+    return this.frontLeftSeat.playCard;
+  }
+  frontRightCard(): Card {
+    return this.frontRightSeat.playCard;
+  }
+  right(): Card {
+    return this.rightSeat.playCard;
+  }
+}

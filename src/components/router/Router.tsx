@@ -7,24 +7,24 @@ import { MyGameState } from "../../ducks/my_game/state";
 import GameTable from "../../domain/GameTable";
 import { GameCardsProvider } from "../../ducks/game_cards/Provider";
 
-const hasMyGame = (
+const findMyGameTable = (
   gameState: MyGameState,
   gameTables: GameTable[]
-): boolean => {
+): GameTable | undefined => {
   const gameTableId = gameState.gameTableId;
   if (!gameState.gameTableId || !gameState.mySeatName) {
-    return false;
+    return undefined;
   }
   if (!gameTables || gameTables.length < 1) {
-    return false;
+    return undefined;
   }
   const gameTable = gameTables.find(
     (gameTable) => gameTable.id === gameTableId
   );
   if (!gameTable) {
-    return false;
+    return undefined;
   }
-  return gameTable.isAllSitDown();
+  return gameTable;
 };
 
 // 一般的なRouterを使いません。
@@ -32,11 +32,12 @@ const hasMyGame = (
 export const Router: React.FC = () => {
   const myGame = React.useContext(MyGameContext);
   const gamesTableState = React.useContext(GameTablesContext);
+  const joinedGameTable = findMyGameTable(myGame, gamesTableState.gameTables);
 
-  if (hasMyGame(myGame, gamesTableState.gameTables)) {
+  if (joinedGameTable && joinedGameTable.isAllSitDown()) {
     return (
       <GameCardsProvider>
-        <GamePage />
+        <GamePage gameTable={joinedGameTable} />
       </GameCardsProvider>
     );
   }

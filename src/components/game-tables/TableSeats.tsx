@@ -63,7 +63,7 @@ const canInput = (
   if (gameState.isSitDown()) {
     return false;
   }
-  if (gameTable.findPlayer(seatName).name) {
+  if (gameTable.findName(seatName)) {
     return false;
   }
   if (!inputPlayer.seatName) {

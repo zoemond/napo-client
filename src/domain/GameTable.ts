@@ -42,6 +42,10 @@ export default class GameTable {
     );
   }
 
+  findName(seatName: SeatName): string | undefined {
+    return this.findPlayer(seatName).name;
+  }
+
   isAllSitDown(): boolean {
     return !this.players.some((player) => !player.isSitDown());
   }

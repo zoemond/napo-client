@@ -3,11 +3,11 @@ import { SeatName, orderedSeatNames } from "./SeatName";
 import { Seat } from "./Seat";
 
 export default class MyGameSight {
-  private mySeat: Seat;
-  private leftSeat: Seat;
-  private frontLeftSeat: Seat;
-  private frontRightSeat: Seat;
-  private rightSeat: Seat;
+  mySeat: Seat;
+  leftSeat: Seat;
+  frontLeftSeat: Seat;
+  frontRightSeat: Seat;
+  rightSeat: Seat;
 
   constructor(mySeatName: SeatName, seats: Seat[]) {
     const myIdx = seats.findIndex((seat) => seat.seatName === mySeatName);
@@ -15,7 +15,7 @@ export default class MyGameSight {
     this.leftSeat = this.findSeatNextTo(myIdx, 1, seats);
     this.frontLeftSeat = this.findSeatNextTo(myIdx, 2, seats);
     this.frontRightSeat = this.findSeatNextTo(myIdx, 3, seats);
-    this.rightSeat = this.findSeatNextTo(myIdx, 3, seats);
+    this.rightSeat = this.findSeatNextTo(myIdx, 4, seats);
   }
 
   private findSeatNextTo(

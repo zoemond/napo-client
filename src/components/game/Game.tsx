@@ -1,4 +1,6 @@
 import * as React from "react";
+import * as PropTypes from "prop-types";
+
 import { Stage, Sprite, Text } from "@inlet/react-pixi";
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
 import { GameState } from "../../ducks/game_cards/state";
@@ -7,6 +9,19 @@ import { socket } from "../../ducks/socket/socket";
 import { MyGameContext } from "../../ducks/my_game/Context";
 import { MyGameState } from "../../ducks/my_game/state";
 import MyGameSight from "../../domain/MyGameSight";
+import GameTable from "../../domain/GameTable";
+import { PlayCardComponent } from "./PlayCardComponent";
+import {
+  openPos,
+  leftPos,
+  myPos,
+  stageSize,
+  nameStyle,
+  rightPos,
+  frontLeftPos,
+  frontRightPos,
+} from "./pixiStyles";
+import { PlayCardSprite } from "./PlayCardSprite";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -16,22 +31,11 @@ const useStyles = makeStyles(() =>
     },
   })
 );
-const stageWidth = 800;
-const stageHight = 600;
-const center = { x: stageWidth / 2, y: stageHight / 2 };
 
-const cardHight = 212;
-const cardWidth = 150;
-
-const handsHight = stageHight - cardHight;
-const cardCenter = {
-  x: center.x - cardWidth / 2,
-  y: center.y - cardHight,
+type GamePageProp = {
+  gameTable: GameTable;
 };
-
-const space = 40;
-
-export const GamePage: React.FC = () => {
+export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const { gameTableId, mySeatName } = React.useContext<MyGameState>(
     MyGameContext
   );
@@ -44,6 +48,8 @@ export const GamePage: React.FC = () => {
   if (!seats) {
     return <Container>empty</Container>;
   }
+
+  const gameTable = props.gameTable;
   const startTurn = (): void => {
     socket.emit("start_turn", { gameTableId });
   };
@@ -58,16 +64,16 @@ export const GamePage: React.FC = () => {
           カードを配る
         </Button>
       </div>
-      <Stage height={stageHight}>
+      <Stage height={stageSize.y} width={stageSize.x}>
         <Sprite
           image={`src/assets/cards/${open1}.png`}
-          x={cardCenter.x - space}
-          y={cardCenter.y}
+          x={openPos.open1.x}
+          y={openPos.open1.y}
         />
         <Sprite
           image={`src/assets/cards/${open2}.png`}
-          x={cardCenter.x + space}
-          y={cardCenter.y}
+          x={openPos.open2.x}
+          y={openPos.open2.y}
         />
         {myGameSight.myCards().map((card, i) => {
           const cardName = card.toStr();
@@ -75,8 +81,8 @@ export const GamePage: React.FC = () => {
             <Sprite
               key={cardName}
               image={`src/assets/cards/${cardName}.png`}
-              x={120 + i * space}
-              y={handsHight}
+              x={i * 40}
+              y={myPos.handY}
               interactive={true}
               pointerdown={(e: PIXI.interaction.InteractionEvent): void => {
                 console.log(e);
@@ -84,7 +90,49 @@ export const GamePage: React.FC = () => {
             />
           );
         })}
+        <PlayCardSprite
+          playCard={myGameSight.mySeat.playCard}
+          x={myPos.playCardX}
+          y={myPos.playCardY}
+        />
+        <Text
+          text={gameTable.findName(myGameSight.mySeat.seatName)}
+          x={myPos.nameX}
+          y={myPos.nameY}
+          // typescriptのエラーが出る
+          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+          // @ts-ignore
+          style={nameStyle}
+        />
+        <PlayCardComponent
+          seat={myGameSight.leftSeat}
+          getName={(s): string => gameTable.findName(s)}
+          baseX={leftPos.x}
+          baseY={leftPos.y}
+        />
+        <PlayCardComponent
+          seat={myGameSight.frontLeftSeat}
+          getName={(s): string => gameTable.findName(s)}
+          baseX={frontLeftPos.x}
+          baseY={frontLeftPos.y}
+        />
+        <PlayCardComponent
+          seat={myGameSight.rightSeat}
+          getName={(s): string => gameTable.findName(s)}
+          baseX={rightPos.x}
+          baseY={rightPos.y}
+        />
+        <PlayCardComponent
+          seat={myGameSight.frontRightSeat}
+          getName={(s): string => gameTable.findName(s)}
+          baseX={frontRightPos.x}
+          baseY={frontRightPos.y}
+        />
       </Stage>
     </Container>
   );
+};
+
+GamePage.propTypes = {
+  gameTable: PropTypes.instanceOf(GameTable).isRequired,
 };

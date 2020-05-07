@@ -43,4 +43,12 @@ export default class MyGameSight {
   rightCard(): Card {
     return this.rightSeat.playCard;
   }
+
+  isMyTurn(): boolean {
+    return !!this.leftCard();
+  }
+
+  isEndOfLap(): boolean {
+    return !!this.rightCard();
+  }
 }

@@ -4,11 +4,11 @@ import Card from "./Card";
 
 export class Declaration {
   constructor(
-    openCards: [Card, Card],
     faceCardNumber: number,
     trump: Trump,
     napoleon: SeatName,
-    aide: SeatName
+    aide: SeatName,
+    openCards?: [Card, Card]
   ) {
     this.openCards = openCards;
     this.faceCardNumber = faceCardNumber;
@@ -16,7 +16,7 @@ export class Declaration {
     this.napoleon = napoleon;
     this.aide = aide;
   }
-  openCards: [Card, Card];
+  openCards?: [Card, Card];
   faceCardNumber: number;
   trump: Trump;
   napoleon: SeatName;

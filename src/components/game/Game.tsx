@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { Stage } from "@inlet/react-pixi";
+import { Stage, Text } from "@inlet/react-pixi";
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
 import { GameState } from "../../ducks/game_cards/state";
 import { GameCardsContext } from "../../ducks/game_cards/Context";
@@ -18,10 +18,22 @@ import {
   stageSize,
   frontLeftPos,
   frontRightPos,
+  buttonTextStyle,
+  getCardWidth,
+  getCardHeight,
 } from "./pixiStyles";
 import { PlayerCards } from "./PlayerCards";
 import { PlayCards } from "./PlayCards";
 import Card from "../../domain/Card";
+import { DeclareDialog } from "./DeclareDialog";
+import { Declaration } from "../../domain/Declaration";
+import {
+  DeclarationResponse,
+  DeclarationSuccessResponse,
+} from "../../response/DeclarationResponse";
+import { Opens } from "./OpenCards";
+import { TurnResponse, TurnSuccessResponse } from "../../response/TurnResponse";
+import { Turn } from "../../domain/Turn";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -32,6 +44,15 @@ const useStyles = makeStyles(() =>
   })
 );
 
+const initialDeclaration = new Declaration(
+  0,
+  "no_trump",
+  "fifth_seat",
+  "fifth_seat"
+);
+
+const initialDiscards = [new Card("spade", 0), new Card("spade", 0)];
+const initialTurn = new Turn(0, [new Card("spade", 0), new Card("spade", 0)]);
 type GamePageProp = {
   gameTable: GameTable;
 };
@@ -45,6 +66,51 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
     socket.emit("read_seats", { gameTableId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [declaration, setDeclaration] = React.useState<Declaration>(
+    initialDeclaration
+  );
+  const [turn, setTurn] = React.useState<Turn>(initialTurn);
+  React.useEffect(() => {
+    socket.on("declaration", (response: DeclarationResponse) => {
+      console.log("declaration, dispatch", response);
+      const d = (response as DeclarationSuccessResponse).declaration;
+      if (d) {
+        setDeclaration(
+          new Declaration(
+            d.faceCardNumber,
+            d.trump,
+            d.napoleon,
+            d.napoleon,
+            d.openCards
+          )
+        );
+      }
+    });
+    socket.emit("read_declaration", { gameTableId });
+    socket.on("turn", (response: TurnResponse) => {
+      console.log("turn, dispatch", response);
+      const t = (response as TurnSuccessResponse).turn;
+      if (t && t.openCards) {
+        const open1 = t.openCards[0];
+        const open2 = t.openCards[1];
+        setTurn(
+          new Turn(
+            t.turnCount,
+            [
+              new Card(open1.suit, open1.number),
+              new Card(open2.suit, open2.number),
+            ],
+            !!t.isOpened
+          )
+        );
+      }
+    });
+    socket.emit("read_turn", { gameTableId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [isDeclaring, setIsDeclaring] = React.useState(false);
+  const [openDeclareDialog, setOpenDeclareDialog] = React.useState(false);
+  const [discards, setDiscards] = React.useState(initialDiscards);
 
   if (!seats) {
     return <Container>empty</Container>;
@@ -57,6 +123,30 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
 
   const myGameSight = new MyGameSight(mySeatName, seats);
   const notMyHandsScale = 0.5;
+
+  const declare = (): void => {
+    setIsDeclaring(true);
+  };
+  const onClose = ({ trump, faceCardNumber, aideCard }): void => {
+    if (trump && faceCardNumber && aideCard) {
+      socket.emit("declare_trump", {
+        gameTableId,
+        trump,
+        faceCardNumber,
+        aideCard,
+        napoleon: mySeatName,
+        openCards: discards,
+      });
+      setIsDeclaring(false);
+    }
+    setOpenDeclareDialog(false);
+  };
+  const isDeclared = !!declaration.faceCardNumber;
+  const myHands = !isDeclaring
+    ? myGameSight.myCards()
+    : [...myGameSight.myCards(), ...turn.openCards];
+  const existDiscard = isDeclaring && discards.every((c) => c.number);
+
   return (
     <Container className={classes.game}>
       <div>
@@ -65,15 +155,67 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         </Button>
       </div>
       <Stage height={stageSize.y} width={stageSize.x}>
+        <Opens
+          opens={turn.openCards}
+          onOpen={(): void => {
+            socket.emit("open", { gameTableId });
+          }}
+          isOpen={turn.isOpened}
+          isDeclared={isDeclared}
+          isDeclaring={isDeclaring}
+        />
         <PlayerCards
-          hands={myGameSight.myCards()}
+          hands={myHands}
           x={myPos().x}
           y={myPos().y}
+          selectedCards={discards}
           name={gameTable.findName(myGameSight.mySeat.seatName)}
           pointerdown={(card: Card): void => {
+            if (isDeclaring) {
+              const foundCard = discards.find(
+                (c) => c.toStr() === card.toStr()
+              );
+              if (!foundCard) {
+                setDiscards([discards[1], card]);
+              }
+            } else if (isDeclared) {
+              const foundCard = discards[0].toStr() === card.toStr();
+              if (!foundCard) {
+                setDiscards([card]);
+              } else {
+                socket.emit("play_card", {
+                  gameTableId,
+                  seat: mySeatName,
+                  card: discards[0],
+                });
+                if (myGameSight.isEndOfLap()) {
+                  setTimeout(() => {
+                    socket.emit("end_lap", {
+                      gameTableId,
+                    });
+                  }, 2000);
+                }
+              }
+            }
             console.log(card);
           }}
         />
+        {existDiscard && (
+          <Text
+            text="捨てる確定"
+            buttonMode={true}
+            interactive={true}
+            pointerdown={(): void => {
+              setOpenDeclareDialog(true);
+            }}
+            x={myPos().x}
+            y={myPos().y + getCardHeight() / 2}
+            // typescriptのエラーが出る
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
+            style={buttonTextStyle}
+          />
+        )}
         <PlayerCards
           hands={myGameSight.leftSeat.hands}
           x={leftPos(notMyHandsScale).x}
@@ -112,6 +254,12 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           y={fieldCenter.y()}
         />
       </Stage>
+      <div>
+        <Button variant="contained" color="primary" onClick={declare}>
+          立ちを確定する
+        </Button>
+        <DeclareDialog open={openDeclareDialog} onClose={onClose} />
+      </div>
     </Container>
   );
 };

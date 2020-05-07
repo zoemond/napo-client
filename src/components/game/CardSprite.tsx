@@ -10,7 +10,7 @@ type CardSpriteProp = {
   y: number;
   scale?: number;
   isDown?: boolean;
-  pointerdown?: (e: PIXI.interaction.InteractionEvent) => void;
+  pointerdown?: (card: Card) => void;
 };
 export const CardSprite: React.FC<CardSpriteProp> = (props: CardSpriteProp) => {
   const card = props.card;
@@ -25,7 +25,9 @@ export const CardSprite: React.FC<CardSpriteProp> = (props: CardSpriteProp) => {
       y={props.y}
       scale={props.scale || 1}
       interactive={!!props.pointerdown}
-      pointerdown={props.pointerdown}
+      pointerdown={(): void => {
+        props.pointerdown(card);
+      }}
     />
   );
 };

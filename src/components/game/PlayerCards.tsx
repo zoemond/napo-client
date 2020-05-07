@@ -13,6 +13,7 @@ type PlayerCardsProp = {
   name: string;
   isDown?: boolean;
   scale?: number;
+  pointerdown?: (card: Card) => void;
 };
 export const PlayerCards: React.FC<PlayerCardsProp> = (
   props: PlayerCardsProp
@@ -30,9 +31,7 @@ export const PlayerCards: React.FC<PlayerCardsProp> = (
           y={props.y}
           isDown={props.isDown}
           scale={scale}
-          pointerdown={(e: PIXI.interaction.InteractionEvent): void => {
-            console.log(e);
-          }}
+          pointerdown={props.pointerdown}
         />
       ))}
       <Text
@@ -54,4 +53,5 @@ PlayerCards.propTypes = {
   y: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   scale: PropTypes.number,
+  pointerdown: PropTypes.func,
 };

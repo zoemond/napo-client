@@ -21,6 +21,7 @@ import {
 } from "./pixiStyles";
 import { PlayerCards } from "./PlayerCards";
 import { PlayCards } from "./PlayCards";
+import Card from "../../domain/Card";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -69,6 +70,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           x={myPos().x}
           y={myPos().y}
           name={gameTable.findName(myGameSight.mySeat.seatName)}
+          pointerdown={(card: Card): void => {
+            console.log(card);
+          }}
         />
         <PlayerCards
           hands={myGameSight.leftSeat.hands}

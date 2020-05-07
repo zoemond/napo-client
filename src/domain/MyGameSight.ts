@@ -40,7 +40,7 @@ export default class MyGameSight {
   frontRightCard(): Card {
     return this.frontRightSeat.playCard;
   }
-  right(): Card {
+  rightCard(): Card {
     return this.rightSeat.playCard;
   }
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { Stage, Sprite, Text } from "@inlet/react-pixi";
+import { Stage } from "@inlet/react-pixi";
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
 import { GameState } from "../../ducks/game_cards/state";
 import { GameCardsContext } from "../../ducks/game_cards/Context";
@@ -10,18 +10,17 @@ import { MyGameContext } from "../../ducks/my_game/Context";
 import { MyGameState } from "../../ducks/my_game/state";
 import MyGameSight from "../../domain/MyGameSight";
 import GameTable from "../../domain/GameTable";
-import { PlayCardComponent } from "./PlayCardComponent";
 import {
-  openPos,
+  rightPos,
   leftPos,
+  fieldCenter,
   myPos,
   stageSize,
-  nameStyle,
-  rightPos,
   frontLeftPos,
   frontRightPos,
 } from "./pixiStyles";
-import { PlayCardSprite } from "./PlayCardSprite";
+import { PlayerCards } from "./PlayerCards";
+import { PlayCards } from "./PlayCards";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -43,6 +42,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const { seats } = React.useContext<GameState>(GameCardsContext);
   React.useEffect(() => {
     socket.emit("read_seats", { gameTableId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!seats) {
@@ -53,10 +53,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const startTurn = (): void => {
     socket.emit("start_turn", { gameTableId });
   };
-  const open1 = "back";
-  const open2 = "back";
 
   const myGameSight = new MyGameSight(mySeatName, seats);
+  const notMyHandsScale = 0.5;
   return (
     <Container className={classes.game}>
       <div>
@@ -65,68 +64,48 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         </Button>
       </div>
       <Stage height={stageSize.y} width={stageSize.x}>
-        <Sprite
-          image={`src/assets/cards/${open1}.png`}
-          x={openPos.open1.x}
-          y={openPos.open1.y}
+        <PlayerCards
+          hands={myGameSight.myCards()}
+          x={myPos().x}
+          y={myPos().y}
+          name={gameTable.findName(myGameSight.mySeat.seatName)}
         />
-        <Sprite
-          image={`src/assets/cards/${open2}.png`}
-          x={openPos.open2.x}
-          y={openPos.open2.y}
+        <PlayerCards
+          hands={myGameSight.leftSeat.hands}
+          x={leftPos(notMyHandsScale).x}
+          y={leftPos(notMyHandsScale).y}
+          isDown
+          scale={notMyHandsScale}
+          name={gameTable.findName(myGameSight.leftSeat.seatName)}
         />
-        {myGameSight.myCards().map((card, i) => {
-          const cardName = card.toStr();
-          return (
-            <Sprite
-              key={cardName}
-              image={`src/assets/cards/${cardName}.png`}
-              x={i * 40}
-              y={myPos.handY}
-              interactive={true}
-              pointerdown={(e: PIXI.interaction.InteractionEvent): void => {
-                console.log(e);
-              }}
-            />
-          );
-        })}
-        <PlayCardSprite
-          playCard={myGameSight.mySeat.playCard}
-          x={myPos.playCardX}
-          y={myPos.playCardY}
+        <PlayerCards
+          hands={myGameSight.frontLeftSeat.hands}
+          x={frontLeftPos(notMyHandsScale).x}
+          y={frontLeftPos(notMyHandsScale).y}
+          isDown
+          scale={notMyHandsScale}
+          name={gameTable.findName(myGameSight.frontLeftSeat.seatName)}
         />
-        <Text
-          text={gameTable.findName(myGameSight.mySeat.seatName)}
-          x={myPos.nameX}
-          y={myPos.nameY}
-          // typescriptのエラーが出る
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          style={nameStyle}
+        <PlayerCards
+          hands={myGameSight.frontRightSeat.hands}
+          x={frontRightPos(notMyHandsScale).x}
+          y={frontRightPos(notMyHandsScale).y}
+          isDown
+          scale={notMyHandsScale}
+          name={gameTable.findName(myGameSight.frontRightSeat.seatName)}
         />
-        <PlayCardComponent
-          seat={myGameSight.leftSeat}
-          getName={(s): string => gameTable.findName(s)}
-          baseX={leftPos.x}
-          baseY={leftPos.y}
+        <PlayerCards
+          hands={myGameSight.rightSeat.hands}
+          x={rightPos(notMyHandsScale).x}
+          y={rightPos(notMyHandsScale).y}
+          isDown
+          scale={notMyHandsScale}
+          name={gameTable.findName(myGameSight.rightSeat.seatName)}
         />
-        <PlayCardComponent
-          seat={myGameSight.frontLeftSeat}
-          getName={(s): string => gameTable.findName(s)}
-          baseX={frontLeftPos.x}
-          baseY={frontLeftPos.y}
-        />
-        <PlayCardComponent
-          seat={myGameSight.rightSeat}
-          getName={(s): string => gameTable.findName(s)}
-          baseX={rightPos.x}
-          baseY={rightPos.y}
-        />
-        <PlayCardComponent
-          seat={myGameSight.frontRightSeat}
-          getName={(s): string => gameTable.findName(s)}
-          baseX={frontRightPos.x}
-          baseY={frontRightPos.y}
+        <PlayCards
+          sight={myGameSight}
+          x={fieldCenter.x(notMyHandsScale)}
+          y={fieldCenter.y()}
         />
       </Stage>
     </Container>

@@ -2,12 +2,14 @@
 const { resolve } = require("path");
 const { CheckerPlugin } = require("awesome-typescript-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
+const SOURCE_PATH = resolve(__dirname, "../../src");
 module.exports = {
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".jsx"],
   },
-  context: resolve(__dirname, "../../src"),
+  context: SOURCE_PATH,
   module: {
     rules: [
       {
@@ -46,6 +48,9 @@ module.exports = {
   plugins: [
     new CheckerPlugin(),
     new HtmlWebpackPlugin({ template: "index.html.ejs" }),
+    new CopyPlugin([{ from: "assets", to: "assets" }], {
+      context: SOURCE_PATH,
+    }),
   ],
   externals: {
     react: "React",

@@ -20,7 +20,7 @@ export const CardSprite: React.FC<CardSpriteProp> = (props: CardSpriteProp) => {
   const cardName = props.isDown ? "back" : card.toStr();
   return (
     <Sprite
-      image={`src/assets/cards/${cardName}.png`}
+      image={`assets/cards/${cardName}.png`}
       x={props.x}
       y={props.y}
       scale={props.scale || 1}

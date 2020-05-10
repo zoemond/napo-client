@@ -22,6 +22,15 @@ function setItem(key: string, value?: string | number): void {
   }
 }
 
+function removeItem(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch (err) {
+    // TODO: show error
+    console.error(err);
+  }
+}
+
 export function getMyGame(): MyGameState {
   const gameTableId = parseInt(getItem("gameTableId"));
   const mySeatName = getItem("mySeatName");
@@ -34,4 +43,9 @@ export function getMyGame(): MyGameState {
 export function setMyGame(game: MyGameState): void {
   setItem("gameTableId", game.gameTableId);
   setItem("mySeatName", game.mySeatName);
+}
+
+export function removeMyGame(): void {
+  removeItem("gameTableId");
+  removeItem("mySeatName");
 }

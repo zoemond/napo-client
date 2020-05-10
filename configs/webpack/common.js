@@ -3,6 +3,7 @@ const { resolve } = require("path");
 const { CheckerPlugin } = require("awesome-typescript-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const Dotenv = require("dotenv-webpack");
 
 const SOURCE_PATH = resolve(__dirname, "../../src");
 module.exports = {
@@ -51,6 +52,7 @@ module.exports = {
     new CopyPlugin([{ from: "assets", to: "assets" }], {
       context: SOURCE_PATH,
     }),
+    new Dotenv(),
   ],
   externals: {
     react: "React",

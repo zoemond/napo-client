@@ -5,7 +5,9 @@ class Socket {
 
   private get(): SocketIOClient.Socket {
     if (!this.socket) {
-      this.socket = io(":7000");
+      const host = process.env.SERVER_HOST || "";
+      const port = process.env.SERVER_PORT || 7000;
+      this.socket = io(host + ":" + port);
     }
     return this.socket;
   }

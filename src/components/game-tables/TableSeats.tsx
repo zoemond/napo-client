@@ -69,7 +69,9 @@ const canInput = (
   if (!inputPlayer.seatName) {
     return true;
   }
-
+  if (!inputPlayer.inputName) {
+    return true;
+  }
   return inputPlayer.seatName === seatName;
 };
 
@@ -83,9 +85,10 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
   const classes = useStyles();
 
   const [inputPlayer, setInputPlayer] = React.useState<InputPlayer>({});
-  const onInput = (seatName: SeatName) => (inputName: string): void => {
+  const onChange = (seatName: SeatName) => (inputName: string): void => {
     setInputPlayer({ seatName, inputName });
   };
+  console.log("input player", inputPlayer);
 
   const myGameState = React.useContext(MyGameContext);
   const dispatch = React.useContext(MyGameDispatchContext);
@@ -116,14 +119,14 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
               disabled={
                 !canInput(myGameState, "first_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("first_seat")}
+              onChange={onChange("first_seat")}
             />
             <TableSeat
               name={gameTable.secondPlayer().name}
               disabled={
                 !canInput(myGameState, "second_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("second_seat")}
+              onChange={onChange("second_seat")}
             />
           </div>
         </div>
@@ -134,14 +137,14 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
               disabled={
                 !canInput(myGameState, "third_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("third_seat")}
+              onChange={onChange("third_seat")}
             />
             <TableSeat
               name={gameTable.fourthPlayer().name}
               disabled={
                 !canInput(myGameState, "fourth_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("fourth_seat")}
+              onChange={onChange("fourth_seat")}
             />
           </div>
         </div>
@@ -152,7 +155,7 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
               disabled={
                 !canInput(myGameState, "fifth_seat", gameTable, inputPlayer)
               }
-              onInput={onInput("fifth_seat")}
+              onChange={onChange("fifth_seat")}
             />
           </div>
         </div>

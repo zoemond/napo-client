@@ -17,7 +17,7 @@ const NO_USER = "名前を入力";
 export const TableSeat: React.FC<{
   name: string;
   disabled: boolean;
-  onInput: (text: string) => void;
+  onChange: (text: string) => void;
 }> = (props) => {
   const classes = useStyles();
   const name = props.name;
@@ -30,7 +30,7 @@ export const TableSeat: React.FC<{
         variant="outlined"
         disabled={props.disabled}
         onChange={(event): void => {
-          props.onInput(event.target.value);
+          props.onChange(event.target.value);
         }}
       />
     </div>
@@ -39,6 +39,6 @@ export const TableSeat: React.FC<{
 
 TableSeat.propTypes = {
   name: PropTypes.string,
-  onInput: PropTypes.func,
+  onChange: PropTypes.func,
   disabled: PropTypes.bool,
 };

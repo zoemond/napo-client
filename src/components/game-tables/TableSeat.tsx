@@ -20,7 +20,9 @@ export const TableSeat: React.FC<{
   onChange: (text: string) => void;
 }> = (props) => {
   const classes = useStyles();
-  const name = props.name;
+  const name = props.name || "";
+  // FIXME: 席を外したときにvalueが管理できていないので入力値が残る
+  // label廃止でvalue管理?
   // TODO: 同時にフォーカスして座ったとき
   // label廃止でvalue管理?
   return (

@@ -17,7 +17,6 @@ import {
   MyGameContext,
 } from "../../ducks/my_game/Context";
 
-import { SIT_DOWN } from "../../ducks/my_game/types";
 import { MyGameState } from "../../ducks/my_game/state";
 import { SeatName } from "../../domain/SeatName";
 
@@ -31,14 +30,25 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       justifyContent: "center",
     },
-    sitDownButton: {
+    tableActions: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
       marginTop: theme.spacing(1),
     },
+    actionButton: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+    },
   })
 );
+
+const canLeave = (myGame: MyGameState, gameTable: GameTable): boolean => {
+  if (myGame.gameTableId !== gameTable.id) {
+    return false;
+  }
+  return myGame.isSitDown();
+};
 
 const canSitDown = (
   myGame: MyGameState,
@@ -88,25 +98,25 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
   const onChange = (seatName: SeatName) => (inputName: string): void => {
     setInputPlayer({ seatName, inputName });
   };
-  console.log("input player", inputPlayer);
 
   const myGameState = React.useContext(MyGameContext);
-  const dispatch = React.useContext(MyGameDispatchContext);
+  const dispatcher = React.useContext(MyGameDispatchContext);
 
   const sitDown = (gameTableId: number): void => {
     const seatName = inputPlayer.seatName;
+    const playerName = inputPlayer.inputName;
     socket.emit("sit_down", {
       gameTableId,
       seatName,
-      playerName: inputPlayer.inputName,
+      playerName,
     });
-    dispatch({
-      type: SIT_DOWN,
-      payload: new MyGameState({
-        gameTableId,
-        mySeatName: seatName as SeatName,
-      }),
-    });
+    dispatcher.sitDown(gameTableId, seatName);
+  };
+  const leave = (gameTableId: number): void => {
+    const seatName = inputPlayer.seatName;
+    socket.emit("sit_down", { gameTableId, seatName, playerName: "" });
+    onChange(seatName)("");
+    dispatcher.leave();
   };
 
   return (
@@ -160,16 +170,30 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
           </div>
         </div>
         <Divider light />
-        <div className={classes.sitDownButton}>
-          <Typography variant="subtitle2">卓 {gameTable.id}</Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            disabled={!canSitDown(myGameState, gameTable, inputPlayer)}
-            onClick={(): void => sitDown(gameTable.id)}
-          >
-            座る
-          </Button>
+        <div className={classes.tableActions}>
+          <Typography className={classes.actionButton} variant="subtitle2">
+            卓 {gameTable.id}
+          </Typography>
+          <div>
+            <Button
+              className={classes.actionButton}
+              variant="contained"
+              disabled={!canLeave(myGameState, gameTable)}
+              onClick={(): void => leave(gameTable.id)}
+            >
+              席を外す
+            </Button>
+
+            <Button
+              className={classes.actionButton}
+              variant="contained"
+              color="primary"
+              disabled={!canSitDown(myGameState, gameTable, inputPlayer)}
+              onClick={(): void => sitDown(gameTable.id)}
+            >
+              座る
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

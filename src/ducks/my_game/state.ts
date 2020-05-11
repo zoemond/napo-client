@@ -10,8 +10,8 @@ export class MyGameState {
     if (!prop) {
       return;
     }
-    this.gameTableId = prop.gameTableId;
-    this.mySeatName = prop.mySeatName;
+    this.gameTableId = prop.gameTableId || null;
+    this.mySeatName = prop.mySeatName || null;
   }
   gameTableId?: number;
   mySeatName?: SeatName;

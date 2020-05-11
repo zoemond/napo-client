@@ -1,11 +1,13 @@
 import * as React from "react";
 import { MyGameState } from "./state";
-import { TMyGameAction } from "./types";
 import * as storage from "../../localStorage/localStorage";
+import { SeatName } from "../../domain/SeatName";
 
 export const MyGameContext = React.createContext<MyGameState>(
   storage.getMyGame()
 );
-export const MyGameDispatchContext = React.createContext<
-  React.Dispatch<TMyGameAction>
->(null);
+type Dispatcher = {
+  sitDown: (gameTableId: number, mySeatName: SeatName) => void;
+  leave: () => void;
+};
+export const MyGameDispatchContext = React.createContext<Dispatcher>(null);

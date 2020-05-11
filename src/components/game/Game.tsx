@@ -82,20 +82,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
     socket.emit("read_declaration", { gameTableId });
     socket.on("turn", (response: TurnResponse) => {
       console.log("turn, dispatch", response);
-      const t = (response as TurnSuccessResponse).turn;
-      if (t && t.openCards) {
-        const open1 = t.openCards[0];
-        const open2 = t.openCards[1];
-        setTurn(
-          new Turn(
-            t.turnCount,
-            [
-              new Card(open1.suit, open1.number),
-              new Card(open2.suit, open2.number),
-            ],
-            !!t.isOpened
-          )
-        );
+      const turnObj = (response as TurnSuccessResponse).turn;
+      if (turnObj && turnObj.openCards) {
+        setTurn(Turn.fromObj(turnObj));
       }
     });
     socket.emit("read_turn", { gameTableId });

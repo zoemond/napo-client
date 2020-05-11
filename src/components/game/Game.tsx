@@ -19,7 +19,6 @@ import {
   frontLeftPos,
   frontRightPos,
   buttonTextStyle,
-  getCardWidth,
   getCardHeight,
 } from "./pixiStyles";
 import { PlayerCards } from "./PlayerCards";
@@ -31,9 +30,10 @@ import {
   DeclarationResponse,
   DeclarationSuccessResponse,
 } from "../../response/DeclarationResponse";
-import { Opens } from "./OpenCards";
+import { OpenCards } from "./OpenCards";
 import { TurnResponse, TurnSuccessResponse } from "../../response/TurnResponse";
 import { Turn } from "../../domain/Turn";
+import { Discards } from "./Discards";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -73,17 +73,10 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   React.useEffect(() => {
     socket.on("declaration", (response: DeclarationResponse) => {
       console.log("declaration, dispatch", response);
-      const d = (response as DeclarationSuccessResponse).declaration;
-      if (d) {
-        setDeclaration(
-          new Declaration(
-            d.faceCardNumber,
-            d.trump,
-            d.napoleon,
-            d.napoleon,
-            d.openCards
-          )
-        );
+      const declarationObj = (response as DeclarationSuccessResponse)
+        .declaration;
+      if (declarationObj) {
+        setDeclaration(Declaration.fromObj(declarationObj));
       }
     });
     socket.emit("read_declaration", { gameTableId });
@@ -135,7 +128,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         faceCardNumber,
         aideCard,
         napoleon: mySeatName,
-        openCards: discards,
+        discards,
       });
       setIsDeclaring(false);
     }
@@ -155,15 +148,17 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         </Button>
       </div>
       <Stage height={stageSize.y} width={stageSize.x}>
-        <Opens
-          opens={turn.openCards}
-          onOpen={(): void => {
-            socket.emit("open", { gameTableId });
-          }}
-          isOpen={turn.isOpened}
-          isDeclared={isDeclared}
-          isDeclaring={isDeclaring}
-        />
+        {isDeclaring ? null : isDeclared ? (
+          <Discards discards={declaration.discards} />
+        ) : (
+          <OpenCards
+            opens={turn.openCards}
+            onOpen={(): void => {
+              socket.emit("open", { gameTableId });
+            }}
+            isOpened={turn.isOpened}
+          />
+        )}
         <PlayerCards
           hands={myHands}
           x={myPos().x}

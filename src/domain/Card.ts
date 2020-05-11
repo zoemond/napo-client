@@ -7,15 +7,12 @@ function isSuit(str: string): str is Suit {
 }
 
 export default class Card {
-  constructor(suit: Suit, number: number) {
-    this.suit = suit;
-    this.number = number;
-  }
   suit: Suit;
   number: number;
 
-  toStr(): string {
-    return this.suit + this.number;
+  constructor(suit: Suit, number: number) {
+    this.suit = suit;
+    this.number = number;
   }
 
   static fromObj(card: Card): Card {
@@ -34,5 +31,16 @@ export default class Card {
       throw new Error("not card string: " + cardStr);
     }
     return new Card(suit, number);
+  }
+
+  isFaceCard(): boolean {
+    if (this.number >= 10) {
+      return false;
+    }
+    return true;
+  }
+
+  toStr(): string {
+    return this.suit + this.number;
   }
 }

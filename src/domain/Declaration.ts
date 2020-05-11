@@ -3,22 +3,36 @@ import { SeatName } from "./SeatName";
 import Card from "./Card";
 
 export class Declaration {
+  discards?: [Card, Card];
+  faceCardNumber: number;
+  trump: Trump;
+  napoleon: SeatName;
+  aide: SeatName;
+
   constructor(
     faceCardNumber: number,
     trump: Trump,
     napoleon: SeatName,
     aide: SeatName,
-    openCards?: [Card, Card]
+    discards?: [Card, Card]
   ) {
-    this.openCards = openCards;
+    this.discards = discards;
     this.faceCardNumber = faceCardNumber;
     this.trump = trump;
     this.napoleon = napoleon;
     this.aide = aide;
   }
-  openCards?: [Card, Card];
-  faceCardNumber: number;
-  trump: Trump;
-  napoleon: SeatName;
-  aide: SeatName;
+
+  static fromObj(declarationObj: Declaration): Declaration {
+    const [discard1, discard2] = declarationObj.discards.map(Card.fromObj);
+    const declaration = new Declaration(
+      declarationObj.faceCardNumber,
+      declarationObj.trump,
+      declarationObj.napoleon,
+      declarationObj.aide,
+      [discard1, discard2]
+    );
+
+    return declaration;
+  }
 }

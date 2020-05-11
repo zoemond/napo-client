@@ -40,7 +40,7 @@ export const GameTablesPage: React.FC = () => {
         卓をたてる
       </Button>
       {state.gameTables.map((gameTable, i) => (
-        <TableSeats key={i} gameTable={gameTable} />
+        <TableSeats key={gameTable.id + "-" + i} gameTable={gameTable} />
       ))}
     </Container>
   );

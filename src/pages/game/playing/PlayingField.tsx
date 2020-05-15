@@ -2,7 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 
 import { getCardWidth, getCardHeight } from "../pixiStyles";
-import { CardSprite } from "../CardSprite";
+import { CardSprite } from "../../../components/CardSprite";
 import MyGameSight from "../../../domain/MyGameSight";
 
 type PlayingFieldProp = {

@@ -2,7 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 
 import { Sprite } from "@inlet/react-pixi";
-import Card from "../../domain/Card";
+import Card from "../domain/Card";
 
 type CardSpriteProp = {
   card: Card;

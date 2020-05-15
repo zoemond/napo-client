@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { CardSprite } from "../CardSprite";
+import { CardSprite } from "../../../components/CardSprite";
 import Card from "../../../domain/Card";
 import { myPos, getCardWidth, stageSize } from "../pixiStyles";
 

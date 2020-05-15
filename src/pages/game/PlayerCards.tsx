@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 
 import Card from "../../domain/Card";
 import { Text } from "@inlet/react-pixi";
-import { CardSprite } from "./CardSprite";
+import { CardSprite } from "../../components/CardSprite";
 import { nameStyle, getCardHeight, handGapWidth } from "./pixiStyles";
 
 type PlayerCardsProp = {

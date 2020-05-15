@@ -43,4 +43,8 @@ export default class Card {
   toStr(): string {
     return this.suit + this.number;
   }
+
+  equals(card: Card): boolean {
+    return card.toStr() === this.toStr();
+  }
 }

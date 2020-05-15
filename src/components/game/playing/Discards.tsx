@@ -1,15 +1,19 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { CardSprite } from "./CardSprite";
-import Card from "../../domain/Card";
-import { myPos, getCardWidth, stageSize } from "./pixiStyles";
+import { CardSprite } from "../CardSprite";
+import Card from "../../../domain/Card";
+import { myPos, getCardWidth, stageSize } from "../pixiStyles";
 
 type DiscardsProp = {
   discards: Card[];
 };
 
 export const Discards: React.FC<DiscardsProp> = (props: DiscardsProp) => {
+  const discards = props.discards;
+  if (!discards) {
+    return null;
+  }
   const scale = 0.7;
   const cardWidth = getCardWidth(scale);
 
@@ -28,5 +32,5 @@ export const Discards: React.FC<DiscardsProp> = (props: DiscardsProp) => {
 };
 
 Discards.propTypes = {
-  discards: PropTypes.arrayOf(PropTypes.instanceOf(Card)).isRequired,
+  discards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
 };

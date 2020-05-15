@@ -1,16 +1,18 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { getCardWidth, getCardHeight } from "./pixiStyles";
-import { CardSprite } from "./CardSprite";
-import MyGameSight from "../../domain/MyGameSight";
+import { getCardWidth, getCardHeight } from "../pixiStyles";
+import { CardSprite } from "../CardSprite";
+import MyGameSight from "../../../domain/MyGameSight";
 
-type PlayCardProp = {
+type PlayingFieldProp = {
   sight: MyGameSight;
   x: number;
   y: number;
 };
-export const PlayCards: React.FC<PlayCardProp> = (props: PlayCardProp) => {
+export const PlayingField: React.FC<PlayingFieldProp> = (
+  props: PlayingFieldProp
+) => {
   const sight = props.sight;
 
   const cardScale = 0.7;
@@ -65,7 +67,7 @@ export const PlayCards: React.FC<PlayCardProp> = (props: PlayCardProp) => {
   );
 };
 
-PlayCards.propTypes = {
+PlayingField.propTypes = {
   sight: PropTypes.instanceOf(MyGameSight).isRequired,
   x: PropTypes.number,
   y: PropTypes.number,

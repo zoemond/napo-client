@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { CardSprite } from "./CardSprite";
-import Card from "../../domain/Card";
+import { CardSprite } from "../CardSprite";
+import Card from "../../../domain/Card";
 import {
   fieldCenter,
   getCardWidth,
   getCardHeight,
   buttonTextStyle,
-} from "./pixiStyles";
+} from "../pixiStyles";
 import { Text } from "@inlet/react-pixi";
 
 type OpensProp = {

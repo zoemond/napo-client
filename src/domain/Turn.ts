@@ -12,7 +12,7 @@ export class Turn {
   constructor(turnCount: number, openCards: [Card, Card], isOpened = false) {
     this.turnCount = turnCount;
     this.openCards = openCards;
-    this.isOpened = isOpened;
+    this.isOpened = !!isOpened; // reactの型チェックを使えるようにdbの0/1をfalse/trueにします。
   }
 
   static fromObj(turnObj: Turn): Turn {

@@ -35,4 +35,8 @@ export class Declaration {
 
     return declaration;
   }
+
+  isDeclared(): boolean {
+    return !!this.faceCardNumber;
+  }
 }

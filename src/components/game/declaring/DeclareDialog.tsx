@@ -14,9 +14,9 @@ import {
   Radio,
 } from "@material-ui/core";
 
-import Card from "../../domain/Card";
-import { Trump } from "../../domain/Trump";
-import { Suit } from "../../domain/Suit";
+import Card from "../../../domain/Card";
+import { Trump } from "../../../domain/Trump";
+import { Suit } from "../../../domain/Suit";
 
 const range = (start: number, end: number): number[] =>
   [...Array(end - start + 1)].map((_, i) => start + i);

@@ -28,7 +28,7 @@ export default class MyGameSight {
     return seats.find((seat) => seat.seatName === seatName);
   }
 
-  myCards(): Card[] {
+  myHands(): Card[] {
     return this.mySeat.hands;
   }
   leftCard(): Card {

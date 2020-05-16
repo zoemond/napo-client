@@ -2,8 +2,8 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
-import { GameState } from "../../ducks/game_cards/state";
-import { GameCardsContext } from "../../ducks/game_cards/Context";
+import { Seats } from "../../ducks/seats/state";
+import { SeatsContext } from "../../ducks/seats/Context";
 import { socket } from "../../ducks/socket/socket";
 import { MyGameContext } from "../../ducks/my_game/Context";
 import { MyGameState } from "../../ducks/my_game/state";
@@ -46,7 +46,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const myGameState = React.useContext<MyGameState>(MyGameContext);
   const gameTableId = myGameState.gameTableId;
   const classes = useStyles();
-  const { seats } = React.useContext<GameState>(GameCardsContext);
+  const { seats } = React.useContext<Seats>(SeatsContext);
   React.useEffect(() => {
     socket.emit("read_seats", { gameTableId });
     // eslint-disable-next-line react-hooks/exhaustive-deps

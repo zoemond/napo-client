@@ -1,11 +1,10 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import * as storage from "../../localStorage/localStorage";
 import { socket } from "../socket/socket";
-import { GameCardsContext } from "./Context";
+import { SeatsContext } from "./Context";
 import reducer from "./reducer";
-import { GameState } from "./state";
+import { Seats } from "./state";
 import { TGameCardsAction } from "./types";
 import {
   SeatsResponse,
@@ -13,18 +12,16 @@ import {
 } from "../../response/GameCardsResponse";
 import { MyGameContext } from "../my_game/Context";
 
-export const GameCardsProvider: React.FC = ({
-  children,
-}): React.ReactElement => {
-  const initialState = React.useContext(GameCardsContext);
+export const SeatsProvider: React.FC = ({ children }): React.ReactElement => {
+  const initialState = React.useContext(SeatsContext);
   const [state, dispatch] = React.useReducer<
-    React.Reducer<GameState, TGameCardsAction>
+    React.Reducer<Seats, TGameCardsAction>
   >(reducer, initialState);
 
   const { gameTableId } = React.useContext(MyGameContext);
   React.useEffect(() => {
     socket.on("seats", (response: SeatsResponse) => {
-      console.log("dispatch", response);
+      console.log("dispatch, seats", response);
       // TODO: 今の所すべてのゲームの状態がブロードキャストされてくるのでどうにかする
       if ((response as SeatsSuccessResponse).gameTableId === gameTableId) {
         dispatch({ type: "GAME_CARDS", payload: response });
@@ -33,12 +30,10 @@ export const GameCardsProvider: React.FC = ({
   }, []);
 
   return (
-    <GameCardsContext.Provider value={state}>
-      {children}
-    </GameCardsContext.Provider>
+    <SeatsContext.Provider value={state}>{children}</SeatsContext.Provider>
   );
 };
 
-GameCardsProvider.propTypes = {
+SeatsProvider.propTypes = {
   children: PropTypes.node,
 };

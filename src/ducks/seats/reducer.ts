@@ -1,4 +1,4 @@
-import { GameState } from "./state";
+import { Seats } from "./state";
 import { TGameCardsAction, GAME_CARDS } from "./types";
 import {
   SeatsResponse,
@@ -7,10 +7,7 @@ import {
 import { ErrorResponse } from "../../response/ErrorResponse";
 import { Seat } from "../../domain/Seat";
 
-function gameCardsReducer(
-  state: GameState,
-  response: SeatsResponse
-): GameState {
+function gameCardsReducer(state: Seats, response: SeatsResponse): Seats {
   if ((response as ErrorResponse).errorMessage) {
     // TODO: show error
     return state;
@@ -23,7 +20,7 @@ function gameCardsReducer(
   };
 }
 
-export default (state: GameState, action: TGameCardsAction): GameState => {
+export default (state: Seats, action: TGameCardsAction): Seats => {
   const response = action.payload;
   switch (action.type) {
     case GAME_CARDS:

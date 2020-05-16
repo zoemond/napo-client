@@ -5,7 +5,7 @@ import { GameTablesContext } from "../../ducks/game_tables/Context";
 import { GameTablesPage } from "../game-tables/GameTables";
 import { MyGameState } from "../../ducks/my_game/state";
 import GameTable from "../../domain/GameTable";
-import { GameCardsProvider } from "../../ducks/game_cards/Provider";
+import { SeatsProvider } from "../../ducks/seats/Provider";
 
 const findMyGameTable = (
   gameState: MyGameState,
@@ -36,9 +36,9 @@ export const Router: React.FC = () => {
 
   if (joinedGameTable && joinedGameTable.isAllSitDown()) {
     return (
-      <GameCardsProvider>
+      <SeatsProvider>
         <GamePage gameTable={joinedGameTable} />
-      </GameCardsProvider>
+      </SeatsProvider>
     );
   }
   return <GameTablesPage />;

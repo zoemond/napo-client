@@ -1,5 +1,5 @@
 import { Seat } from "../../domain/Seat";
 
-export class GameState {
+export class Seats {
   seats: Seat[];
 }

@@ -19,6 +19,7 @@ import {
 
 import { MyGameState } from "../../ducks/my_game/state";
 import { SeatName } from "../../domain/SeatName";
+import { LeaveButton } from "../../ducks/my_game/LeaveButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -105,18 +106,7 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
   const sitDown = (gameTableId: number): void => {
     const seatName = inputPlayer.seatName;
     const playerName = inputPlayer.inputName;
-    socket.emit("sit_down", {
-      gameTableId,
-      seatName,
-      playerName,
-    });
-    dispatcher.sitDown(gameTableId, seatName);
-  };
-  const leave = (gameTableId: number): void => {
-    const seatName = inputPlayer.seatName;
-    socket.emit("sit_down", { gameTableId, seatName, playerName: "" });
-    onChange(seatName)("");
-    dispatcher.leave();
+    dispatcher.sitDown(gameTableId, seatName, playerName);
   };
 
   return (
@@ -175,14 +165,11 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
             卓 {gameTable.id}
           </Typography>
           <div>
-            <Button
-              className={classes.actionButton}
-              variant="contained"
-              disabled={!canLeave(myGameState, gameTable)}
-              onClick={(): void => leave(gameTable.id)}
-            >
-              席を外す
-            </Button>
+            <LeaveButton
+              gameTableIdToLeave={gameTable.id}
+              myGameState={myGameState}
+              onLeave={(seatName): void => onChange(seatName)("")}
+            />
 
             <Button
               className={classes.actionButton}

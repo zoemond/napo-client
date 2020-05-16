@@ -20,6 +20,7 @@ import { Turn } from "../../domain/Turn";
 import { PlayingStage } from "./playing/PlayingStage";
 import { DeclarationStage } from "./declaring/DeclarationStage";
 import { SeatName } from "../../domain/SeatName";
+import { LeaveButton } from "../../ducks/my_game/LeaveButton";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -42,9 +43,8 @@ type GamePageProp = {
   gameTable: GameTable;
 };
 export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
-  const { gameTableId, mySeatName } = React.useContext<MyGameState>(
-    MyGameContext
-  );
+  const myGameState = React.useContext<MyGameState>(MyGameContext);
+  const gameTableId = myGameState.gameTableId;
   const classes = useStyles();
   const { seats } = React.useContext<GameState>(GameCardsContext);
   React.useEffect(() => {
@@ -86,7 +86,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   };
 
   const findName = (seatName: SeatName): string => gameTable.findName(seatName);
-  const myGameSight = new MyGameSight(mySeatName, seats);
+  const myGameSight = new MyGameSight(myGameState.mySeatName, seats);
 
   return (
     <Container className={classes.game}>
@@ -94,6 +94,10 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <Button variant="contained" color="primary" onClick={startTurn}>
           カードを配る
         </Button>
+        <LeaveButton
+          gameTableIdToLeave={gameTable.id}
+          myGameState={myGameState}
+        />
       </div>
       {declaration.isDeclared() ? (
         <PlayingStage

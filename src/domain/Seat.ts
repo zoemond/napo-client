@@ -7,19 +7,22 @@ export class Seat {
   faceCards: Card[] = [];
   hands: Card[] = [];
   score = 0;
+  isFirstPlay = false;
 
   constructor(
     seatName: SeatName,
     playCard?: Card,
     faceCards: Card[] = [],
     hands: Card[] = [],
-    score = 0
+    score = 0,
+    isFirstPlay = false
   ) {
     this.seatName = seatName;
     this.playCard = playCard;
     this.faceCards = faceCards;
     this.hands = hands;
     this.score = score;
+    this.isFirstPlay = isFirstPlay;
   }
 
   static from(seatObj: Seat): Seat {
@@ -28,7 +31,8 @@ export class Seat {
       seatObj.playCard && Card.fromObj(seatObj.playCard),
       seatObj.faceCards.map(Card.fromObj),
       seatObj.hands.map(Card.fromObj),
-      seatObj.score
+      seatObj.score,
+      seatObj.isFirstPlay
     );
   }
 }

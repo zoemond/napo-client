@@ -76,7 +76,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           カードを配る
         </Button>
         <LeaveButton
-          gameTableIdToLeave={gameTable.id}
+          gameTableIdToLeave={gameTableId}
           myGameState={myGameState}
         />
       </div>

@@ -45,10 +45,12 @@ export default class MyGameSight {
   }
 
   isMyTurn(): boolean {
-    return !!this.leftCard();
-  }
-
-  isEndOfLap(): boolean {
-    return !!this.rightCard();
+    if (this.mySeat.playCard) {
+      return false;
+    }
+    if (this.rightCard()) {
+      return true;
+    }
+    return this.mySeat.isFirstPlay;
   }
 }

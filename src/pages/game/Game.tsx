@@ -2,23 +2,21 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
-import { Seats } from "../../ducks/seats/state";
 import { SeatsContext, SeatsDispatchContext } from "../../ducks/seats/Context";
 import { MyGameContext } from "../../ducks/my_game/Context";
-import { MyGameState } from "../../ducks/my_game/state";
 import MyGameSight from "../../domain/MyGameSight";
 import GameTable from "../../domain/GameTable";
 import { SeatName } from "../../domain/SeatName";
 import { PlayingStage } from "./playing/PlayingStage";
 import { DeclarationStage } from "./declaring/DeclarationStage";
 import { LeaveButton } from "../../ducks/my_game/LeaveButton";
-import { DeclarationState } from "../../ducks/declaration/state";
 import {
   DeclarationContext,
   DeclarationDispatchContext,
 } from "../../ducks/declaration/Context";
 import { TurnContext, TurnDispatchContext } from "../../ducks/turn/Context";
-import { TurnState } from "../../ducks/turn/state";
+import { socket } from "../../ducks/socket/socket";
+import Card from "../../domain/Card";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,19 +31,18 @@ type GamePageProp = {
   gameTable: GameTable;
 };
 export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
-  const myGameState = React.useContext<MyGameState>(MyGameContext);
-  const gameTableId = myGameState.gameTableId;
   const classes = useStyles();
 
-  const { seats } = React.useContext<Seats>(SeatsContext);
-  const { declaration } = React.useContext<DeclarationState>(
-    DeclarationContext
-  );
-  const { turn } = React.useContext<TurnState>(TurnContext);
+  const myGameState = React.useContext(MyGameContext);
+  const { seats } = React.useContext(SeatsContext);
+  const { declaration } = React.useContext(DeclarationContext);
+  const { turn } = React.useContext(TurnContext);
 
   const seatsActions = React.useContext(SeatsDispatchContext);
   const declarationActions = React.useContext(DeclarationDispatchContext);
   const turnActions = React.useContext(TurnDispatchContext);
+
+  const gameTableId = myGameState.gameTableId;
 
   React.useEffect(() => {
     seatsActions.readSeats(gameTableId);
@@ -59,9 +56,12 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   }
 
   const gameTable = props.gameTable;
+  const myGameSight = new MyGameSight(myGameState.mySeatName, seats);
 
   const findName = (seatName: SeatName): string => gameTable.findName(seatName);
-  const myGameSight = new MyGameSight(myGameState.mySeatName, seats);
+  const onPlayCard = (card: Card, seatName: SeatName): void => {
+    socket.emit("play_card", { gameTableId, seatName, card });
+  };
 
   return (
     <Container className={classes.game}>
@@ -82,16 +82,20 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
       </div>
       {declaration.isDeclared() ? (
         <PlayingStage
+          myGameState={myGameState}
           gameSight={myGameSight}
           findName={findName}
           discards={declaration.discards}
+          onPlayCard={onPlayCard}
         />
       ) : (
         <DeclarationStage
+          myGameState={myGameState}
           gameSight={myGameSight}
           findName={findName}
           openCards={turn.openCards}
           isOpened={turn.isOpened}
+          declare={declarationActions.declare}
         />
       )}
     </Container>

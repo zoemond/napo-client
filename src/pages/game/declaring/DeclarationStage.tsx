@@ -4,7 +4,6 @@ import * as PropTypes from "prop-types";
 import { Stage } from "@inlet/react-pixi";
 
 import { socket } from "../../../ducks/socket/socket";
-import { MyGameContext } from "../../../ducks/my_game/Context";
 import { MyGameState } from "../../../ducks/my_game/state";
 import MyGameSight from "../../../domain/MyGameSight";
 import { stageSize, myPos } from "../pixiStyles";
@@ -17,15 +16,16 @@ import { PlayerCards } from "../PlayerCards";
 import { OpenCards } from "./OpenCards";
 import { DeclarationStartButton } from "./DeclarationStartButton";
 import { DiscardsButton } from "./DiscardsButton";
-import { DeclarationDispatchContext } from "../../../ducks/declaration/Context";
 import { Declaration } from "../../../domain/Declaration";
 
 const initialDiscards = [new Card("spade", 0), new Card("spade", 0)];
 type DeclarationStageProp = {
+  myGameState: MyGameState;
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
   openCards: [Card, Card];
   isOpened: boolean;
+  declare: (declaration: Declaration) => void;
 };
 
 /**
@@ -37,11 +37,8 @@ type DeclarationStageProp = {
 export const DeclarationStage: React.FC<DeclarationStageProp> = (
   props: DeclarationStageProp
 ) => {
-  const { gameTableId, mySeatName } = React.useContext<MyGameState>(
-    MyGameContext
-  );
+  const { gameTableId, mySeatName } = props.myGameState;
 
-  const declarationActions = React.useContext(DeclarationDispatchContext);
   const [isDeclaringStarted, setIsDeclaringStarted] = React.useState(false);
   const [openDeclareDialog, setOpenDeclareDialog] = React.useState(false);
   const [discards, setDiscards] = React.useState(initialDiscards);
@@ -51,9 +48,10 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
   const declareTrump = ({ trump, faceCardNumber, aideCard }): void => {
     if (trump && faceCardNumber && aideCard) {
       const [d1, d2] = discards;
-      declarationActions.declare(
+      props.declare(
         new Declaration(faceCardNumber, trump, mySeatName, aideCard, [d1, d2])
       );
+
       setIsDeclaringStarted(false);
     }
     setOpenDeclareDialog(false);
@@ -121,5 +119,6 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
 
 DeclarationStage.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
+  myGameState: PropTypes.instanceOf(MyGameState).isRequired,
   findName: PropTypes.func.isRequired,
 };

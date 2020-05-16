@@ -3,32 +3,31 @@ import * as PropTypes from "prop-types";
 
 import { Stage } from "@inlet/react-pixi";
 import MyGameSight from "../../../domain/MyGameSight";
-import { fieldCenter, stageSize } from "../pixiStyles";
+import { fieldCenter, stageSize, myPos } from "../pixiStyles";
 import { PlayingField } from "./PlayingField";
 import { Discards } from "./Discards";
 import { CoPlayer } from "../CoPlayer";
-import { Me } from "./Me";
 import Card from "../../../domain/Card";
 import { SeatName } from "../../../domain/SeatName";
-import { socket } from "../../../ducks/socket/socket";
 import { MyGameState } from "../../../ducks/my_game/state";
-import { MyGameContext } from "../../../ducks/my_game/Context";
+import { PlayerCards } from "../PlayerCards";
 
+const initialPlayCard = new Card("spade", 0);
+const notMyHandsScale = 0.5;
 type PlayingStageProp = {
+  myGameState: MyGameState;
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
   discards: Card[];
+  onPlayCard: (card: Card, seatName: SeatName) => void;
 };
 export const PlayingStage: React.FC<PlayingStageProp> = (
   props: PlayingStageProp
 ) => {
-  const { gameTableId, mySeatName } = React.useContext<MyGameState>(
-    MyGameContext
-  );
-  const notMyHandsScale = 0.5;
-
+  const [playCard, setPlayCard] = React.useState(initialPlayCard);
   const myGameSight = props.gameSight;
   const findName = props.findName;
+  const mySeatName = myGameSight.mySeat.seatName;
   return (
     <Stage height={stageSize.y} width={stageSize.x}>
       <CoPlayer
@@ -41,12 +40,21 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
         y={fieldCenter.y()}
       />
       <Discards discards={props.discards} />
-      <Me
+      <PlayerCards
         hands={myGameSight.myHands()}
+        x={myPos().x}
+        y={myPos().y}
+        selectedCards={[playCard]}
         name={findName(mySeatName)}
-        isMyTurn={myGameSight.isMyTurn()}
-        onDiscard={(card): void => {
-          socket.emit("play_card", { gameTableId, seatName: mySeatName, card });
+        pointerdown={(card: Card): void => {
+          console.log(card);
+          if (!playCard.equals(card)) {
+            setPlayCard(card);
+            return;
+          }
+          if (myGameSight.isMyTurn()) {
+            props.onPlayCard(card, mySeatName);
+          }
         }}
       />
     </Stage>
@@ -55,6 +63,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
 
 PlayingStage.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
-  findName: PropTypes.func.isRequired,
   discards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
+  findName: PropTypes.func.isRequired,
+  onPlayCard: PropTypes.func.isRequired,
 };

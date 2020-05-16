@@ -21,10 +21,10 @@ export const PlayingField: React.FC<PlayingFieldProp> = (
   const cardHeight = getCardHeight(cardScale);
   // x
   const myX = props.x;
-  const rightX = myX - cardWidth;
-  const frontRightX = myX - cardWidth / 2;
-  const frontLeftX = myX + cardWidth / 2;
-  const leftX = myX + cardWidth;
+  const leftX = myX - cardWidth;
+  const frontLeftX = myX - cardWidth / 2;
+  const frontRightX = myX + cardWidth / 2;
+  const rightX = myX + cardWidth;
 
   // y
   const myY = props.y + cardHeight + cardHeight / 2;

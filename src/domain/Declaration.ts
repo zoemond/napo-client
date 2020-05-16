@@ -7,20 +7,20 @@ export class Declaration {
   faceCardNumber: number;
   trump: Trump;
   napoleon: SeatName;
-  aide: SeatName;
+  aideCard: Card;
 
   constructor(
     faceCardNumber: number,
     trump: Trump,
     napoleon: SeatName,
-    aide: SeatName,
+    aideCard: Card,
     discards?: [Card, Card]
   ) {
     this.discards = discards;
     this.faceCardNumber = faceCardNumber;
     this.trump = trump;
     this.napoleon = napoleon;
-    this.aide = aide;
+    this.aideCard = aideCard;
   }
 
   static fromObj(declarationObj: Declaration): Declaration {
@@ -29,7 +29,7 @@ export class Declaration {
       declarationObj.faceCardNumber,
       declarationObj.trump,
       declarationObj.napoleon,
-      declarationObj.aide,
+      Card.fromObj(declarationObj.aideCard),
       [discard1, discard2]
     );
 

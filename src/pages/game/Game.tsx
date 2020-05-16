@@ -10,17 +10,17 @@ import { MyGameState } from "../../ducks/my_game/state";
 import MyGameSight from "../../domain/MyGameSight";
 import GameTable from "../../domain/GameTable";
 import Card from "../../domain/Card";
-import { Declaration } from "../../domain/Declaration";
-import {
-  DeclarationResponse,
-  DeclarationSuccessResponse,
-} from "../../response/DeclarationResponse";
-import { TurnResponse, TurnSuccessResponse } from "../../response/TurnResponse";
+import { SeatName } from "../../domain/SeatName";
 import { Turn } from "../../domain/Turn";
+import { TurnResponse, TurnSuccessResponse } from "../../response/TurnResponse";
 import { PlayingStage } from "./playing/PlayingStage";
 import { DeclarationStage } from "./declaring/DeclarationStage";
-import { SeatName } from "../../domain/SeatName";
 import { LeaveButton } from "../../ducks/my_game/LeaveButton";
+import { DeclarationState } from "../../ducks/declaration/state";
+import {
+  DeclarationContext,
+  DeclarationDispatchContext,
+} from "../../ducks/declaration/Context";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,13 +31,6 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const initialDeclaration = new Declaration(
-  0,
-  "no_trump",
-  "fifth_seat",
-  "fifth_seat"
-);
-
 const initialTurn = new Turn(0, [new Card("spade", 0), new Card("spade", 0)]);
 type GamePageProp = {
   gameTable: GameTable;
@@ -46,26 +39,22 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const myGameState = React.useContext<MyGameState>(MyGameContext);
   const gameTableId = myGameState.gameTableId;
   const classes = useStyles();
+
   const { seats } = React.useContext<Seats>(SeatsContext);
   const seatsActions = React.useContext(SeatsDispatchContext);
+  const { declaration } = React.useContext<DeclarationState>(
+    DeclarationContext
+  );
+  const declarationActions = React.useContext(DeclarationDispatchContext);
+
   React.useEffect(() => {
     seatsActions.readSeats(gameTableId);
+    declarationActions.readDeclaration(gameTableId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [declaration, setDeclaration] = React.useState<Declaration>(
-    initialDeclaration
-  );
+
   const [turn, setTurn] = React.useState<Turn>(initialTurn);
   React.useEffect(() => {
-    socket.on("declaration", (response: DeclarationResponse) => {
-      console.log("declaration, dispatch", response);
-      const declarationObj = (response as DeclarationSuccessResponse)
-        .declaration;
-      if (declarationObj) {
-        setDeclaration(Declaration.fromObj(declarationObj));
-      }
-    });
-    socket.emit("read_declaration", { gameTableId });
     socket.on("turn", (response: TurnResponse) => {
       console.log("turn, dispatch", response);
       const turnObj = (response as TurnSuccessResponse).turn;

@@ -17,6 +17,8 @@ import { PlayerCards } from "../PlayerCards";
 import { OpenCards } from "./OpenCards";
 import { DeclarationStartButton } from "./DeclarationStartButton";
 import { DiscardsButton } from "./DiscardsButton";
+import { DeclarationDispatchContext } from "../../../ducks/declaration/Context";
+import { Declaration } from "../../../domain/Declaration";
 
 const initialDiscards = [new Card("spade", 0), new Card("spade", 0)];
 type DeclarationStageProp = {
@@ -38,6 +40,8 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
   const { gameTableId, mySeatName } = React.useContext<MyGameState>(
     MyGameContext
   );
+
+  const declarationActions = React.useContext(DeclarationDispatchContext);
   const [isDeclaringStarted, setIsDeclaringStarted] = React.useState(false);
   const [openDeclareDialog, setOpenDeclareDialog] = React.useState(false);
   const [discards, setDiscards] = React.useState(initialDiscards);
@@ -46,14 +50,10 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
 
   const declareTrump = ({ trump, faceCardNumber, aideCard }): void => {
     if (trump && faceCardNumber && aideCard) {
-      socket.emit("declare_trump", {
-        gameTableId,
-        trump,
-        faceCardNumber,
-        aideCard,
-        napoleon: mySeatName,
-        discards,
-      });
+      const [d1, d2] = discards;
+      declarationActions.declare(
+        new Declaration(faceCardNumber, trump, mySeatName, aideCard, [d1, d2])
+      );
       setIsDeclaringStarted(false);
     }
     setOpenDeclareDialog(false);

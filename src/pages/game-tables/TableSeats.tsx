@@ -1,25 +1,15 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
-import {
-  CardContent,
-  Card,
-  Button,
-  Divider,
-  Typography,
-} from "@material-ui/core";
-import GameTable from "../../domain/GameTable";
-import { TableSeat } from "./TableSeat";
-
+import { CardContent, Card, Divider, Typography } from "@material-ui/core";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { socket } from "../../ducks/socket/socket";
-import {
-  MyGameDispatchContext,
-  MyGameContext,
-} from "../../ducks/my_game/Context";
 
-import { MyGameState } from "../../ducks/my_game/state";
+import GameTable from "../../domain/GameTable";
 import { SeatName } from "../../domain/SeatName";
+import { MyGameContext } from "../../ducks/my_game/Context";
+import { MyGameState } from "../../ducks/my_game/state";
 import { LeaveButton } from "../../ducks/my_game/LeaveButton";
+import { SitDownButton } from "../../ducks/my_game/SitDownButton";
+import { TableSeat } from "./TableSeat";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,27 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-const canLeave = (myGame: MyGameState, gameTable: GameTable): boolean => {
-  if (myGame.gameTableId !== gameTable.id) {
-    return false;
-  }
-  return myGame.isSitDown();
-};
-
-const canSitDown = (
-  myGame: MyGameState,
-  gameTable: GameTable,
-  inputPlayer: InputPlayer
-): boolean => {
-  if (myGame.gameTableId && myGame.mySeatName) {
-    return false;
-  }
-  if (gameTable.isAllSitDown()) {
-    return false;
-  }
-  return !!inputPlayer.inputName;
-};
 
 const canInput = (
   gameState: MyGameState,
@@ -101,13 +70,6 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
   };
 
   const myGameState = React.useContext(MyGameContext);
-  const dispatcher = React.useContext(MyGameDispatchContext);
-
-  const sitDown = (gameTableId: number): void => {
-    const seatName = inputPlayer.seatName;
-    const playerName = inputPlayer.inputName;
-    dispatcher.sitDown(gameTableId, seatName, playerName);
-  };
 
   return (
     <Card className={classes.tableSeats}>
@@ -170,16 +132,12 @@ export const TableSeats: React.FC<{ gameTable: GameTable }> = ({
               myGameState={myGameState}
               onLeave={(seatName): void => onChange(seatName)("")}
             />
-
-            <Button
-              className={classes.actionButton}
-              variant="contained"
-              color="primary"
-              disabled={!canSitDown(myGameState, gameTable, inputPlayer)}
-              onClick={(): void => sitDown(gameTable.id)}
-            >
-              座る
-            </Button>
+            <SitDownButton
+              gameTableToSitDown={gameTable}
+              myGameState={myGameState}
+              seatName={inputPlayer.seatName}
+              playerName={inputPlayer.inputName}
+            />
           </div>
         </div>
       </CardContent>

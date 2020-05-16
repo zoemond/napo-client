@@ -2,7 +2,7 @@ import * as React from "react";
 import * as PropTypes from "prop-types";
 
 import { socket } from "../socket/socket";
-import { SeatsContext } from "./Context";
+import { SeatsContext, SeatsDispatchContext } from "./Context";
 import reducer from "./reducer";
 import { Seats } from "./state";
 import { TGameCardsAction } from "./types";
@@ -27,10 +27,18 @@ export const SeatsProvider: React.FC = ({ children }): React.ReactElement => {
         dispatch({ type: "GAME_CARDS", payload: response });
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const readSeats = (gameTableId: number): void => {
+    socket.emit("read_seats", { gameTableId });
+  };
 
   return (
-    <SeatsContext.Provider value={state}>{children}</SeatsContext.Provider>
+    <SeatsContext.Provider value={state}>
+      <SeatsDispatchContext.Provider value={{ readSeats }}>
+        {children}
+      </SeatsDispatchContext.Provider>
+    </SeatsContext.Provider>
   );
 };
 

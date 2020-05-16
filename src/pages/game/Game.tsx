@@ -3,7 +3,7 @@ import * as PropTypes from "prop-types";
 
 import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
 import { Seats } from "../../ducks/seats/state";
-import { SeatsContext } from "../../ducks/seats/Context";
+import { SeatsContext, SeatsDispatchContext } from "../../ducks/seats/Context";
 import { socket } from "../../ducks/socket/socket";
 import { MyGameContext } from "../../ducks/my_game/Context";
 import { MyGameState } from "../../ducks/my_game/state";
@@ -47,8 +47,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const gameTableId = myGameState.gameTableId;
   const classes = useStyles();
   const { seats } = React.useContext<Seats>(SeatsContext);
+  const seatsActions = React.useContext(SeatsDispatchContext);
   React.useEffect(() => {
-    socket.emit("read_seats", { gameTableId });
+    seatsActions.readSeats(gameTableId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [declaration, setDeclaration] = React.useState<Declaration>(

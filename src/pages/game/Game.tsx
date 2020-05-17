@@ -6,7 +6,7 @@ import { SeatsContext, SeatsDispatchContext } from "../../ducks/seats/Context";
 import { MyGameContext } from "../../ducks/my_game/Context";
 import MyGameSight from "../../domain/MyGameSight";
 import GameTable from "../../domain/GameTable";
-import { SeatName } from "../../domain/SeatName";
+import { SeatName, orderedSeatNames } from "../../domain/SeatName";
 import { PlayingStage } from "./playing/PlayingStage";
 import { DeclarationStage } from "./declaring/DeclarationStage";
 import { LeaveButton } from "../../ducks/my_game/LeaveButton";
@@ -16,6 +16,9 @@ import {
 } from "../../ducks/declaration/Context";
 import { TurnContext, TurnDispatchContext } from "../../ducks/turn/Context";
 import Card from "../../domain/Card";
+
+import * as storage from "../../localStorage/localStorage";
+import { MyGameState } from "../../ducks/my_game/state";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -76,6 +79,22 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           gameTableIdToLeave={gameTableId}
           myGameState={myGameState}
         />
+        {/* TODO: Debug中のみ表示 */}
+        {orderedSeatNames.map((seatName, i) => {
+          return (
+            <Button
+              key={i}
+              onClick={(): void => {
+                storage.setMyGame(
+                  new MyGameState({ gameTableId, mySeatName: seatName })
+                );
+                location.reload();
+              }}
+            >
+              {i + 1}
+            </Button>
+          );
+        })}
       </div>
       {declaration.isDeclared() ? (
         <PlayingStage

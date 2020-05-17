@@ -11,6 +11,8 @@ import {
   SeatsSuccessResponse,
 } from "../../response/GameCardsResponse";
 import { MyGameContext } from "../my_game/Context";
+import Card from "../../domain/Card";
+import { SeatName } from "../../domain/SeatName";
 
 export const SeatsProvider: React.FC = ({ children }): React.ReactElement => {
   const initialState = React.useContext(SeatsContext);
@@ -32,10 +34,17 @@ export const SeatsProvider: React.FC = ({ children }): React.ReactElement => {
   const readSeats = (gameTableId: number): void => {
     socket.emit("read_seats", { gameTableId });
   };
+  const playCard = (
+    gameTableId: number,
+    card: Card,
+    seatName: SeatName
+  ): void => {
+    socket.emit("play_card", { gameTableId, seatName, card });
+  };
 
   return (
     <SeatsContext.Provider value={state}>
-      <SeatsDispatchContext.Provider value={{ readSeats }}>
+      <SeatsDispatchContext.Provider value={{ readSeats, playCard }}>
         {children}
       </SeatsDispatchContext.Provider>
     </SeatsContext.Provider>

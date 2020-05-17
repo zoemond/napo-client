@@ -36,10 +36,13 @@ export const TurnProvider: React.FC = ({ children }): React.ReactElement => {
   const startTurn = (gameTableId: number): void => {
     socket.emit("start_turn", { gameTableId });
   };
+  const open = (gameTableId: number): void => {
+    socket.emit("open", { gameTableId });
+  };
 
   return (
     <TurnContext.Provider value={state}>
-      <TurnDispatchContext.Provider value={{ startTurn, readTurn }}>
+      <TurnDispatchContext.Provider value={{ startTurn, readTurn, open }}>
         {children}
       </TurnDispatchContext.Provider>
     </TurnContext.Provider>

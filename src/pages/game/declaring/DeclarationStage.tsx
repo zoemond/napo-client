@@ -3,28 +3,26 @@ import * as PropTypes from "prop-types";
 
 import { Stage } from "@inlet/react-pixi";
 
-import { socket } from "../../../ducks/socket/socket";
-import { MyGameState } from "../../../ducks/my_game/state";
 import MyGameSight from "../../../domain/MyGameSight";
-import { stageSize, myPos } from "../pixiStyles";
 import Card from "../../../domain/Card";
-import { DeclareDialog } from "./DeclareDialog";
-
-import { CoPlayer } from "../CoPlayer";
+import { Declaration } from "../../../domain/Declaration";
 import { SeatName } from "../../../domain/SeatName";
+
+import { stageSize, myPos } from "../pixiStyles";
+import { CoPlayer } from "../CoPlayer";
 import { PlayerCards } from "../PlayerCards";
 import { OpenCards } from "./OpenCards";
 import { DeclarationStartButton } from "./DeclarationStartButton";
 import { DiscardsButton } from "./DiscardsButton";
-import { Declaration } from "../../../domain/Declaration";
+import { DeclareDialog } from "./DeclareDialog";
 
 const initialDiscards = [new Card("spade", 0), new Card("spade", 0)];
 type DeclarationStageProp = {
-  myGameState: MyGameState;
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
   openCards: [Card, Card];
   isOpened: boolean;
+  onOpen: () => void;
   declare: (declaration: Declaration) => void;
 };
 
@@ -37,13 +35,12 @@ type DeclarationStageProp = {
 export const DeclarationStage: React.FC<DeclarationStageProp> = (
   props: DeclarationStageProp
 ) => {
-  const { gameTableId, mySeatName } = props.myGameState;
-
   const [isDeclaringStarted, setIsDeclaringStarted] = React.useState(false);
   const [openDeclareDialog, setOpenDeclareDialog] = React.useState(false);
   const [discards, setDiscards] = React.useState(initialDiscards);
 
   const myGameSight = props.gameSight;
+  const mySeatName = myGameSight.mySeat.seatName;
 
   const declareTrump = ({ trump, faceCardNumber, aideCard }): void => {
     if (trump && faceCardNumber && aideCard) {
@@ -64,6 +61,9 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
   const hands = isDeclaringStarted
     ? [...myGameSight.myHands(), ...openCards]
     : myGameSight.myHands();
+
+  const existOpen =
+    !isDeclaringStarted && openCards && openCards.every((c) => c.number);
   const existDiscard = isDeclaringStarted && discards.every((c) => c.number);
   return (
     <React.Fragment>
@@ -77,7 +77,7 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
           x={myPos().x}
           y={myPos().y}
           selectedCards={discards}
-          name={findName(myGameSight.mySeat.seatName)}
+          name={findName(mySeatName)}
           pointerdown={(card: Card): void => {
             console.log(card);
             if (!isDeclaringStarted) {
@@ -90,11 +90,11 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
             setDiscards([card, discard1]);
           }}
         />
-        {!isDeclaringStarted && (
+        {existOpen && (
           <React.Fragment>
             <OpenCards
               opens={openCards}
-              onOpen={(): void => socket.emit("open", { gameTableId })}
+              onOpen={props.onOpen}
               isOpened={props.isOpened}
             />
             <DeclarationStartButton
@@ -119,6 +119,5 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
 
 DeclarationStage.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
-  myGameState: PropTypes.instanceOf(MyGameState).isRequired,
   findName: PropTypes.func.isRequired,
 };

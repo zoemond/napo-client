@@ -9,13 +9,11 @@ import { Discards } from "./Discards";
 import { CoPlayer } from "../CoPlayer";
 import Card from "../../../domain/Card";
 import { SeatName } from "../../../domain/SeatName";
-import { MyGameState } from "../../../ducks/my_game/state";
 import { PlayerCards } from "../PlayerCards";
 
 const initialPlayCard = new Card("spade", 0);
 const notMyHandsScale = 0.5;
 type PlayingStageProp = {
-  myGameState: MyGameState;
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
   discards: Card[];

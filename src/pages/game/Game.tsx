@@ -15,7 +15,6 @@ import {
   DeclarationDispatchContext,
 } from "../../ducks/declaration/Context";
 import { TurnContext, TurnDispatchContext } from "../../ducks/turn/Context";
-import { socket } from "../../ducks/socket/socket";
 import Card from "../../domain/Card";
 
 const useStyles = makeStyles(() =>
@@ -60,7 +59,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
 
   const findName = (seatName: SeatName): string => gameTable.findName(seatName);
   const onPlayCard = (card: Card, seatName: SeatName): void => {
-    socket.emit("play_card", { gameTableId, seatName, card });
+    seatsActions.playCard(gameTableId, card, seatName);
   };
 
   return (
@@ -69,9 +68,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={(): void => {
-            turnActions.startTurn(gameTableId);
-          }}
+          onClick={(): void => turnActions.startTurn(gameTableId)}
         >
           カードを配る
         </Button>
@@ -82,7 +79,6 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
       </div>
       {declaration.isDeclared() ? (
         <PlayingStage
-          myGameState={myGameState}
           gameSight={myGameSight}
           findName={findName}
           discards={declaration.discards}
@@ -90,11 +86,11 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         />
       ) : (
         <DeclarationStage
-          myGameState={myGameState}
           gameSight={myGameSight}
           findName={findName}
           openCards={turn.openCards}
           isOpened={turn.isOpened}
+          onOpen={(): void => turnActions.open(gameTableId)}
           declare={declarationActions.declare}
         />
       )}

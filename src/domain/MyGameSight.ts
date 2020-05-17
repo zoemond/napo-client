@@ -51,6 +51,6 @@ export default class MyGameSight {
     if (this.rightCard()) {
       return true;
     }
-    return this.mySeat.isFirstPlay;
+    return this.mySeat.isLastLapWinner;
   }
 }

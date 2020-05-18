@@ -40,6 +40,9 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
   const [discards, setDiscards] = React.useState(initialDiscards);
 
   const myGameSight = props.gameSight;
+  if (!myGameSight.mySeat) {
+    return null;
+  }
   const mySeatName = myGameSight.mySeat.seatName;
 
   const declareTrump = ({ trump, faceCardNumber, aideCard }): void => {

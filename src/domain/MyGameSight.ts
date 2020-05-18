@@ -14,8 +14,11 @@ export default class MyGameSight {
   frontLeftSeat: Seat;
   frontRightSeat: Seat;
   rightSeat: Seat;
+  seats: Seat[];
 
   constructor(mySeatName: SeatName, seats: Seat[]) {
+    this.seats = seats;
+
     const myIdx = seats.findIndex((seat) => seat.seatName === mySeatName);
     this.mySeat = seats[myIdx];
     this.leftSeat = this.findSeatNextTo(myIdx, 1, seats);
@@ -70,5 +73,9 @@ export default class MyGameSight {
       return true;
     }
     return this.mySeat.isLastLapWinner;
+  }
+
+  anyonePlayedCards(): boolean {
+    return this.seats.every((seat) => !seat.playCard);
   }
 }

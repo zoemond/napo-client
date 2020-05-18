@@ -16,6 +16,9 @@ type GamePageProp = {
 export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
   const myGameSight = props.gameSight;
   const findName = props.findName;
+  if (!myGameSight.mySeat) {
+    return null;
+  }
   return (
     <React.Fragment>
       <PlayerCards

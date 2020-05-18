@@ -45,7 +45,7 @@ export const GameTablesPage: React.FC = () => {
         </Button>
         {/* テストリリース用.(テーブル変更した場合など)ローカルストレージをリセットする */}
         <LeaveButton
-          gameTableIdToLeave={null}
+          gameTableIdToLeave={0}
           myGameState={myGameState}
           forceEnable
         >

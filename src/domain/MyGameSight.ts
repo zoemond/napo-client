@@ -1,6 +1,12 @@
 import Card from "./Card";
 import { SeatName, orderedSeatNames } from "./SeatName";
 import { Seat } from "./Seat";
+const handsOrder = {
+  spade: 4,
+  heart: 3,
+  club: 2,
+  diamond: 1,
+};
 
 export default class MyGameSight {
   mySeat: Seat;
@@ -29,7 +35,19 @@ export default class MyGameSight {
   }
 
   myHands(): Card[] {
-    return this.mySeat.hands;
+    return this.mySeat.hands.sort((card1, card2) => {
+      const suitOrder = handsOrder[card2.suit] - handsOrder[card1.suit];
+      if (suitOrder) {
+        return suitOrder;
+      }
+      if (card2.number === 1) {
+        return -1;
+      }
+      if (card1.number === 1) {
+        return 1;
+      }
+      return card1.number - card2.number;
+    });
   }
   leftCard(): Card {
     return this.leftSeat.playCard;

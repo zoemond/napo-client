@@ -144,7 +144,11 @@ export const DeclareDialog: React.FC<DeclareDialogProp> = (
     });
   };
   const handleCancel = (): void => {
-    onClose();
+    onClose({
+      trump: null,
+      faceCardNumber: 0,
+      aideCard: null,
+    });
   };
 
   const classes = useStyles();

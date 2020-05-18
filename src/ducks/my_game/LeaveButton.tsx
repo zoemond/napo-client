@@ -25,17 +25,19 @@ type LeaveButtonProps = {
   myGameState: MyGameState;
   gameTableIdToLeave: number;
   onLeave?: (seatName: SeatName) => void;
+  forceEnable?: boolean;
+  children?: React.ReactNode;
 };
 export const LeaveButton: React.FC<LeaveButtonProps> = (props) => {
   const classes = useStyles();
   const myGameState = props.myGameState;
   const dispatcher = React.useContext(MyGameDispatchContext);
 
-  const leave = (gameTableId: number, seatName: SeatName): void => {
+  const leave = (gameState: MyGameState): void => {
     if (props.onLeave) {
-      props.onLeave(seatName);
+      props.onLeave(gameState.mySeatName);
     }
-    dispatcher.leave(gameTableId, seatName);
+    dispatcher.leave(gameState.gameTableId, gameState.mySeatName);
   };
 
   const gameTableId = props.gameTableIdToLeave;
@@ -43,10 +45,10 @@ export const LeaveButton: React.FC<LeaveButtonProps> = (props) => {
     <Button
       className={classes.actionButton}
       variant="contained"
-      disabled={!canLeave(myGameState, gameTableId)}
-      onClick={(): void => leave(gameTableId, myGameState.mySeatName)}
+      disabled={props.forceEnable ? false : !canLeave(myGameState, gameTableId)}
+      onClick={(): void => leave(myGameState)}
     >
-      席を外す
+      {props.children || "席を外す"}
     </Button>
   );
 };
@@ -54,4 +56,6 @@ LeaveButton.propTypes = {
   gameTableIdToLeave: PropTypes.number.isRequired,
   myGameState: PropTypes.instanceOf(MyGameState).isRequired,
   onLeave: PropTypes.func,
+  forceEnable: PropTypes.bool,
+  children: PropTypes.node,
 };

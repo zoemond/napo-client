@@ -11,7 +11,7 @@ const nameHeight = 22;
 export const getCardHeight = (scale = 1): number => 170 * scale;
 export const getCardWidth = (scale = 1): number => 120 * scale;
 
-export const faceCardGapHeight = (scale = 1): number => 40 * scale;
+export const faceCardGapHeight = (scale = 1): number => 35 * scale;
 export const handGapWidth = (scale = 1): number => 40 * scale;
 
 const handsWith = (scale = 1): number => {

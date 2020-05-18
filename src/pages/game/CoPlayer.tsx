@@ -6,7 +6,7 @@ import { rightPos, leftPos, frontLeftPos, frontRightPos } from "./pixiStyles";
 import { PlayerCards } from "./PlayerCards";
 import { SeatName } from "../../domain/SeatName";
 
-const notMyHandsScale = 0.5;
+const notMyHandsScale = 0.6;
 
 type GamePageProp = {
   gameSight: MyGameSight;
@@ -20,6 +20,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
     <React.Fragment>
       <PlayerCards
         hands={myGameSight.leftSeat.hands}
+        faceCards={myGameSight.leftSeat.faceCards}
         x={leftPos(notMyHandsScale).x}
         y={leftPos(notMyHandsScale).y}
         isDown
@@ -28,6 +29,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
       />
       <PlayerCards
         hands={myGameSight.frontLeftSeat.hands}
+        faceCards={myGameSight.frontLeftSeat.faceCards}
         x={frontLeftPos(notMyHandsScale).x}
         y={frontLeftPos(notMyHandsScale).y}
         isDown
@@ -36,6 +38,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
       />
       <PlayerCards
         hands={myGameSight.frontRightSeat.hands}
+        faceCards={myGameSight.frontRightSeat.faceCards}
         x={frontRightPos(notMyHandsScale).x}
         y={frontRightPos(notMyHandsScale).y}
         isDown
@@ -44,6 +47,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
       />
       <PlayerCards
         hands={myGameSight.rightSeat.hands}
+        faceCards={myGameSight.rightSeat.faceCards}
         x={rightPos(notMyHandsScale).x}
         y={rightPos(notMyHandsScale).y}
         isDown

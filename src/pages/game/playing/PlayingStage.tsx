@@ -12,7 +12,7 @@ import { SeatName } from "../../../domain/SeatName";
 import { PlayerCards } from "../PlayerCards";
 
 const initialPlayCard = new Card("spade", 0);
-const notMyHandsScale = 0.5;
+const notMyHandsScale = 0.6;
 type PlayingStageProp = {
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
@@ -39,6 +39,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
       />
       <Discards discards={props.discards} />
       <PlayerCards
+        faceCards={myGameSight.mySeat.faceCards}
         hands={myGameSight.myHands()}
         x={myPos().x}
         y={myPos().y}

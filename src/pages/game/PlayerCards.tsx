@@ -5,9 +5,11 @@ import Card from "../../domain/Card";
 import { Text } from "@inlet/react-pixi";
 import { CardSprite } from "../../components/CardSprite";
 import { nameStyle, getCardHeight, handGapWidth } from "./pixiStyles";
+import { FaceCards } from "./FaceCards";
 
 type PlayerCardsProp = {
   hands: Card[];
+  faceCards?: Card[];
   x: number;
   y: number;
   name: string;
@@ -30,6 +32,12 @@ export const PlayerCards: React.FC<PlayerCardsProp> = (
   };
   return (
     <React.Fragment>
+      <FaceCards
+        faceCards={props.faceCards || []}
+        x={props.x}
+        y={props.y}
+        scale={scale}
+      />
       {props.hands.map((card, i) => {
         const y = isSelected(card) ? props.y - 20 * scale : props.y;
         return (

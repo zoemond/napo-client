@@ -21,7 +21,7 @@ function declarationReducer(
     return state;
   }
   if (!declarationResponse.declaration) {
-    return state;
+    return new DeclarationState();
   }
 
   const declaration = Declaration.fromObj(declarationResponse.declaration);

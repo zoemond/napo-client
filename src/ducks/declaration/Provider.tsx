@@ -32,16 +32,13 @@ export const DeclarationProvider: React.FC = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const readDeclaration = (gameTableId: number): void => {
-    socket.emit("read_declaration", { gameTableId });
-  };
   const declare = (declaration: Declaration): void => {
     socket.emit("declare_trump", { ...declaration, gameTableId });
   };
 
   return (
     <DeclarationContext.Provider value={state}>
-      <DeclarationDispatchContext.Provider value={{ declare, readDeclaration }}>
+      <DeclarationDispatchContext.Provider value={{ declare }}>
         {children}
       </DeclarationDispatchContext.Provider>
     </DeclarationContext.Provider>

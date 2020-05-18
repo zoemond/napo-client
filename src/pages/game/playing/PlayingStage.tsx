@@ -51,7 +51,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
             setPlayCard(card);
             return;
           }
-          if (myGameSight.isMyTurn()) {
+          if (myGameSight.isMyRound()) {
             props.onPlayCard(card, mySeatName);
           }
         }}

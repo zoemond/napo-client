@@ -14,7 +14,7 @@ import {
   DeclarationContext,
   DeclarationDispatchContext,
 } from "../../ducks/declaration/Context";
-import { TurnContext, TurnDispatchContext } from "../../ducks/turn/Context";
+import { RoundContext, RoundDispatchContext } from "../../ducks/round/Context";
 import Card from "../../domain/Card";
 
 import * as storage from "../../localStorage/localStorage";
@@ -38,18 +38,18 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const myGameState = React.useContext(MyGameContext);
   const { seats } = React.useContext(SeatsContext);
   const { declaration } = React.useContext(DeclarationContext);
-  const { turn } = React.useContext(TurnContext);
+  const { round } = React.useContext(RoundContext);
 
   const seatsActions = React.useContext(SeatsDispatchContext);
   const declarationActions = React.useContext(DeclarationDispatchContext);
-  const turnActions = React.useContext(TurnDispatchContext);
+  const roundActions = React.useContext(RoundDispatchContext);
 
   const gameTableId = myGameState.gameTableId;
 
   React.useEffect(() => {
     seatsActions.readSeats(gameTableId);
     declarationActions.readDeclaration(gameTableId);
-    turnActions.readTurn(gameTableId);
+    roundActions.readRound(gameTableId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -71,7 +71,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <Button
           variant="contained"
           color="primary"
-          onClick={(): void => turnActions.startTurn(gameTableId)}
+          onClick={(): void => roundActions.startRound(gameTableId)}
         >
           カードを配る
         </Button>
@@ -107,9 +107,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <DeclarationStage
           gameSight={myGameSight}
           findName={findName}
-          openCards={turn.openCards}
-          isOpened={turn.isOpened}
-          onOpen={(): void => turnActions.open(gameTableId)}
+          openCards={round.openCards}
+          isOpened={round.isOpened}
+          onOpen={(): void => roundActions.open(gameTableId)}
           declare={declarationActions.declare}
         />
       )}

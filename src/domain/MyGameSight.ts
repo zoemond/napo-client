@@ -44,7 +44,7 @@ export default class MyGameSight {
     return this.rightSeat.playCard;
   }
 
-  isMyTurn(): boolean {
+  isMyRound(): boolean {
     if (this.mySeat.playCard) {
       return false;
     }

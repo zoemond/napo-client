@@ -1,14 +1,14 @@
-import { TurnResponse } from "../../response/TurnResponse";
+import { RoundResponse } from "../../response/RoundResponse";
 
 export const TURN = "TURN";
-class ReadTurnAction {
+class ReadRoundAction {
   type = TURN;
   payload: {
     gameTableId: number;
-    turnResponse: TurnResponse;
+    roundResponse: RoundResponse;
   };
 }
 
-export type TTurnAction = ReadTurnAction;
+export type TRoundAction = ReadRoundAction;
 // ↑アクションが増えたら↓こうする予定
 //  type IActions = IAddChat | IUpdateAction | IDeleteAction

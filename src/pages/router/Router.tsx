@@ -7,7 +7,7 @@ import { MyGameState } from "../../ducks/my_game/state";
 import GameTable from "../../domain/GameTable";
 import { SeatsProvider } from "../../ducks/seats/Provider";
 import { DeclarationProvider } from "../../ducks/declaration/Provider";
-import { TurnProvider } from "../../ducks/turn/Provider";
+import { RoundProvider } from "../../ducks/round/Provider";
 
 const findMyGameTable = (
   gameState: MyGameState,
@@ -39,11 +39,11 @@ export const Router: React.FC = () => {
   if (joinedGameTable && joinedGameTable.isAllSitDown()) {
     return (
       <SeatsProvider>
-        <TurnProvider>
+        <RoundProvider>
           <DeclarationProvider>
             <GamePage gameTable={joinedGameTable} />
           </DeclarationProvider>
-        </TurnProvider>
+        </RoundProvider>
       </SeatsProvider>
     );
   }

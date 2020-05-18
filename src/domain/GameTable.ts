@@ -2,17 +2,17 @@ import { Player } from "./Player";
 import { SeatName } from "./SeatName";
 
 export default class GameTable {
-  constructor(id: number, turnCount: number, players?: Player[]) {
+  constructor(id: number, roundCount: number, players?: Player[]) {
     this.id = id;
-    this.turnCount = turnCount;
+    this.roundCount = roundCount;
     this.players = players || [];
   }
   id: number;
-  turnCount: number;
+  roundCount: number;
   players: Player[];
 
   static from(gameTableObj: GameTable): GameTable {
-    const gameTable = new GameTable(gameTableObj.id, gameTableObj.turnCount);
+    const gameTable = new GameTable(gameTableObj.id, gameTableObj.roundCount);
     gameTable.players = gameTableObj.players.map(
       (player) => new Player(player.seatName, player.name)
     );

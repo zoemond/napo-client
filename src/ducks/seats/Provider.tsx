@@ -5,11 +5,8 @@ import { socket } from "../socket/socket";
 import { SeatsContext, SeatsDispatchContext } from "./Context";
 import reducer from "./reducer";
 import { Seats } from "./state";
-import { TGameCardsAction } from "./types";
-import {
-  SeatsResponse,
-  SeatsSuccessResponse,
-} from "../../response/GameCardsResponse";
+import { TGameCardsAction, GAME_CARDS } from "./types";
+import { SeatsResponse } from "../../response/GameCardsResponse";
 import { MyGameContext } from "../my_game/Context";
 import Card from "../../domain/Card";
 import { SeatName } from "../../domain/SeatName";
@@ -24,10 +21,10 @@ export const SeatsProvider: React.FC = ({ children }): React.ReactElement => {
   React.useEffect(() => {
     socket.on("seats", (response: SeatsResponse) => {
       console.log("dispatch, seats", response);
-      // TODO: 今の所すべてのゲームの状態がブロードキャストされてくるのでどうにかする
-      if ((response as SeatsSuccessResponse).gameTableId === gameTableId) {
-        dispatch({ type: "GAME_CARDS", payload: response });
-      }
+      dispatch({
+        type: GAME_CARDS,
+        payload: { myGameTableId: gameTableId, response },
+      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,22 +1,23 @@
 import { Seats } from "./state";
-import { TGameCardsAction, GAME_CARDS } from "./types";
-import {
-  SeatsResponse,
-  SeatsSuccessResponse,
-} from "../../response/GameCardsResponse";
+import { TGameCardsAction, GAME_CARDS, ReadSeatsPayLoad } from "./types";
+import { SeatsSuccessResponse } from "../../response/GameCardsResponse";
 import { ErrorResponse } from "../../response/ErrorResponse";
 import { Seat } from "../../domain/Seat";
 
-function gameCardsReducer(state: Seats, response: SeatsResponse): Seats {
-  if ((response as ErrorResponse).errorMessage) {
+function gameCardsReducer(state: Seats, payload: ReadSeatsPayLoad): Seats {
+  const successResponse = payload.response as SeatsSuccessResponse;
+  if (successResponse.gameTableId !== payload.myGameTableId) {
+    // TODO: 今の所すべてのゲームの状態がブロードキャストされてくるのでどうにかする
+    return state;
+  }
+  if ((payload.response as ErrorResponse).errorMessage) {
     // TODO: show error
     return state;
   }
 
-  const seats = (response as SeatsSuccessResponse).seats;
   return {
     ...state,
-    seats: seats.map((seat) => Seat.from(seat)),
+    seats: successResponse.seats.map((seat) => Seat.from(seat)),
   };
 }
 

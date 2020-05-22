@@ -13,9 +13,12 @@ type DebugSwitchSeatProp = {
 export const DebugSwitchSeat: React.FC<DebugSwitchSeatProp> = ({
   gameTableId,
 }) => {
+  /* Debug中のみ表示 */
+  if (!process.env.IS_DEV) {
+    return null;
+  }
   return (
     <React.Fragment>
-      {/* TODO: Debug中のみ表示 */}
       {orderedSeatNames.map((seatName, i) => {
         return (
           <Button

@@ -51,21 +51,15 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initialState = new MyGameSight(myGameState.mySeatName, seats || []);
-  const [myGameSight, setMySight] = React.useState(initialState);
-  const isDeclared = declaration.isDeclared();
-  const mySeatName = myGameState.mySeatName;
+  const myGameSight = new MyGameSight(myGameState.mySeatName, seats || []);
   React.useEffect(() => {
-    const sight = new MyGameSight(mySeatName, seats || []);
-
-    if (isDeclared && sight.anyonePlayedCards()) {
+    if (!seats) return;
+    if (seats.every((seat) => seat.playCard)) {
       setTimeout(() => {
-        setMySight(sight);
+        seatsActions.readSeats(gameTableId);
       }, 1000);
-    } else {
-      setMySight(sight);
     }
-  }, [isDeclared, mySeatName, seats]);
+  }, [gameTableId, seats, seatsActions]);
 
   if (!seats) {
     return <Container>empty</Container>;
@@ -75,18 +69,6 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
 
   const findName = (seatName: SeatName): string => gameTable.findName(seatName);
   const onPlayCard = (card: Card, seatName: SeatName): void => {
-    setMySight(
-      new MyGameSight(
-        mySeatName,
-        seats.map((seat) => {
-          if (seat.seatName === seatName) {
-            seat.playCard = card;
-            seat.hands = seat.hands.filter((hand) => !hand.equals(card));
-          }
-          return seat;
-        })
-      )
-    );
     seatsActions.playCard(gameTableId, card, seatName);
   };
 

@@ -1,5 +1,6 @@
 .idea/
-.vscode
+.vscode/*
+!.vscode/launch.json
 
 dist/
 node_modules/

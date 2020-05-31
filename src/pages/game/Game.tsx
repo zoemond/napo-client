@@ -115,7 +115,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <PlayingStage
           gameSight={myGameSight}
           findName={findName}
-          discards={declaration.discards}
+          declaration={declaration}
           onPlayCard={onPlayCard}
           isShowCards={isShowCards}
         />

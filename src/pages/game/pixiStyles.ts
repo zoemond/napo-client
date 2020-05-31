@@ -79,6 +79,11 @@ export const nameStyle = new TextStyle({
   fill: ["#ffffff"],
 });
 
+export const declarationTextStyle = new TextStyle({
+  fontSize: 16,
+  fill: ["#000000"],
+});
+
 export const buttonTextStyle = new TextStyle({
   fontSize: 16,
   stroke: "#4a1850",

@@ -16,49 +16,18 @@ import {
 
 import Card from "../../../domain/Card";
 import { Trump } from "../../../domain/Trump";
-import { Suit } from "../../../domain/Suit";
+import { suitValueLabels } from "../../../value_labels/SuiteValueLabels";
+import { trumpValueLabels } from "../../../value_labels/TrumpValueLabels";
 
 const range = (start: number, end: number): number[] =>
   [...Array(end - start + 1)].map((_, i) => start + i);
 
-type TrumpLabel = "ノートラ" | "スペード" | "ハート" | "ダイヤ" | "クラブ";
-class TrumpSelect {
-  label: TrumpLabel;
-  trump: Trump;
-  constructor(trump: Trump, label: TrumpLabel) {
-    this.label = label;
-    this.trump = trump;
-  }
-}
-class SuitSelect {
-  label: TrumpLabel;
-  suit: Suit;
-  constructor(suit: Suit, label: TrumpLabel) {
-    this.label = label;
-    this.suit = suit;
-  }
-}
-const suits = [
-  new SuitSelect("spade", "スペード"),
-  new SuitSelect("heart", "ハート"),
-  new SuitSelect("diamond", "ダイヤ"),
-  new SuitSelect("club", "クラブ"),
-];
-
-const trumps = [
-  new TrumpSelect("no_trump", "ノートラ"),
-  new TrumpSelect("spade", "スペード"),
-  new TrumpSelect("heart", "ハート"),
-  new TrumpSelect("diamond", "ダイヤ"),
-  new TrumpSelect("club", "クラブ"),
-];
-
 const faceCardNumbers = range(13, 20);
 const numbers = range(1, 13);
-const allCards = suits.reduce((cards, suit) => {
+const allCards = suitValueLabels.reduce((cards, suit) => {
   return cards.concat(
     numbers.map((number) => {
-      return { card: new Card(suit.suit, number), label: suit.label + number };
+      return { card: new Card(suit.value, number), label: suit.label + number };
     })
   );
 }, []);
@@ -91,7 +60,7 @@ export const DeclareDialog: React.FC<DeclareDialogProp> = (
   props: DeclareDialogProp
 ) => {
   const { onClose, open } = props;
-  const [trump, setTrump] = React.useState(trumps[0].trump);
+  const [trump, setTrump] = React.useState(trumpValueLabels[0].value);
   const handleTrump = (
     event: React.ChangeEvent<HTMLInputElement>,
     value: string
@@ -157,14 +126,14 @@ export const DeclareDialog: React.FC<DeclareDialogProp> = (
       <DialogTitle>宣言</DialogTitle>
       <DialogContent className={classes.content} dividers>
         <RadioGroup value={trump} onChange={handleTrump}>
-          {trumps.map((trumpSelect) => {
-            const value = trumpSelect.trump;
+          {trumpValueLabels.map((trumpValueLabel) => {
+            const value = trumpValueLabel.value;
             return (
               <FormControlLabel
                 value={value}
                 key={value}
                 control={<Radio />}
-                label={trumpSelect.label}
+                label={trumpValueLabel.label}
               />
             );
           })}

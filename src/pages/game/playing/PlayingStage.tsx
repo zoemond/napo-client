@@ -5,18 +5,19 @@ import { Stage } from "@inlet/react-pixi";
 import MyGameSight from "../../../domain/MyGameSight";
 import { fieldCenter, stageSize, myPos } from "../pixiStyles";
 import { PlayingField } from "./PlayingField";
-import { Discards } from "./Discards";
+import { DeclaredInfo } from "./DeclaredInfo";
 import { CoPlayer } from "../CoPlayer";
 import Card from "../../../domain/Card";
 import { SeatName } from "../../../domain/SeatName";
 import { PlayerCards } from "../PlayerCards";
+import { Declaration } from "../../../domain/Declaration";
 
 const initialPlayCard = new Card("spade", 0);
 const notMyHandsScale = 0.6;
 type PlayingStageProp = {
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
-  discards: Card[];
+  declaration: Declaration;
   onPlayCard: (card: Card, seatName: SeatName) => void;
   isShowCards: boolean;
 };
@@ -39,7 +40,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
         x={fieldCenter.x(notMyHandsScale)}
         y={fieldCenter.y()}
       />
-      <Discards discards={props.discards} />
+      <DeclaredInfo declaration={props.declaration} />
       <PlayerCards
         faceCards={myGameSight.mySeat.faceCards}
         hands={myGameSight.myHands()}
@@ -66,7 +67,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
 
 PlayingStage.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
-  discards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
+  declaration: PropTypes.instanceOf(Declaration).isRequired,
   findName: PropTypes.func.isRequired,
   onPlayCard: PropTypes.func.isRequired,
   isShowCards: PropTypes.bool,

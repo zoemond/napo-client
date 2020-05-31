@@ -23,7 +23,7 @@ export const DeclarationProvider: React.FC = ({
   const { gameTableId } = React.useContext(MyGameContext);
   React.useEffect(() => {
     socket.on("declaration", (declarationResponse: DeclarationResponse) => {
-      console.log("declaration, dispatch", declarationResponse);
+      console.log("dispatch, declaration", declarationResponse);
       dispatch({
         type: DECLARATION,
         payload: { gameTableId, declarationResponse },

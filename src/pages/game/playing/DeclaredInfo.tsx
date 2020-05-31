@@ -43,15 +43,16 @@ export const DeclaredInfo: React.FC<DiscardsProp> = (props: DiscardsProp) => {
   const x2 = centerX - cardWidth;
   const y = myPos().y;
 
+  const declarationX = x2 + 40;
   const declarationY = y + cardHeight / 2;
   return (
     <React.Fragment>
       <CardSprite isDown={discard1.isFaceCard()} card={discard1} x={x1} y={y} />
       <CardSprite isDown={discard2.isFaceCard()} card={discard2} x={x2} y={y} />
-      <Graphics x={x2} y={declarationY} draw={draw} />
+      <Graphics x={declarationX} y={declarationY} draw={draw} />
       <Text
         text={tatiLabel + "\n" + aideLabel}
-        x={x2}
+        x={declarationX}
         y={declarationY}
         // typescriptのエラーが出る
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

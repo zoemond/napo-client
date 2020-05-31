@@ -24,6 +24,7 @@ type DeclarationStageProp = {
   isOpened: boolean;
   onOpen: () => void;
   declare: (declaration: Declaration) => void;
+  isShowCards: boolean;
 };
 
 /**
@@ -74,6 +75,7 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
         <CoPlayer
           gameSight={myGameSight}
           findName={(seatName): string => findName(seatName)}
+          isShowCards={props.isShowCards}
         />
         <PlayerCards
           hands={hands}
@@ -123,4 +125,5 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
 DeclarationStage.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
   findName: PropTypes.func.isRequired,
+  isShowCards: PropTypes.bool,
 };

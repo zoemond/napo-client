@@ -11,6 +11,7 @@ const notMyHandsScale = 0.6;
 type GamePageProp = {
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
+  isShowCards?: boolean;
 };
 
 export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
@@ -19,6 +20,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
   if (!myGameSight.mySeat) {
     return null;
   }
+  const isDown = !props.isShowCards;
   return (
     <React.Fragment>
       <PlayerCards
@@ -26,7 +28,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         faceCards={myGameSight.leftSeat.faceCards}
         x={leftPos(notMyHandsScale).x}
         y={leftPos(notMyHandsScale).y}
-        isDown
+        isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.leftSeat.seatName)}
       />
@@ -35,7 +37,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         faceCards={myGameSight.frontLeftSeat.faceCards}
         x={frontLeftPos(notMyHandsScale).x}
         y={frontLeftPos(notMyHandsScale).y}
-        isDown
+        isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.frontLeftSeat.seatName)}
       />
@@ -44,7 +46,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         faceCards={myGameSight.frontRightSeat.faceCards}
         x={frontRightPos(notMyHandsScale).x}
         y={frontRightPos(notMyHandsScale).y}
-        isDown
+        isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.frontRightSeat.seatName)}
       />
@@ -53,7 +55,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         faceCards={myGameSight.rightSeat.faceCards}
         x={rightPos(notMyHandsScale).x}
         y={rightPos(notMyHandsScale).y}
-        isDown
+        isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.rightSeat.seatName)}
       />
@@ -64,4 +66,5 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
 CoPlayer.propTypes = {
   gameSight: PropTypes.instanceOf(MyGameSight).isRequired,
   findName: PropTypes.func.isRequired,
+  isShowCards: PropTypes.bool,
 };

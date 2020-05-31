@@ -18,6 +18,7 @@ type PlayingStageProp = {
   findName: (seatName: SeatName) => string;
   discards: Card[];
   onPlayCard: (card: Card, seatName: SeatName) => void;
+  isShowCards: boolean;
 };
 export const PlayingStage: React.FC<PlayingStageProp> = (
   props: PlayingStageProp
@@ -31,6 +32,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
       <CoPlayer
         gameSight={myGameSight}
         findName={(seatName): string => findName(seatName)}
+        isShowCards={props.isShowCards}
       />
       <PlayingField
         sight={myGameSight}
@@ -65,4 +67,5 @@ PlayingStage.propTypes = {
   discards: PropTypes.arrayOf(PropTypes.instanceOf(Card)),
   findName: PropTypes.func.isRequired,
   onPlayCard: PropTypes.func.isRequired,
+  isShowCards: PropTypes.bool,
 };

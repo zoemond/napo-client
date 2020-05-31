@@ -33,6 +33,7 @@ type GamePageProp = {
 };
 export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const classes = useStyles();
+  const [isShowCards, setIsShowCards] = React.useState(false);
 
   const myGameState = React.useContext(MyGameContext);
   const { seats } = React.useContext(SeatsContext);
@@ -71,16 +72,23 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const onPlayCard = (card: Card, seatName: SeatName): void => {
     seatsActions.playCard(gameTableId, card, seatName);
   };
+  const onHandOut = (): void => {
+    roundActions.startRound(gameTableId);
+    setIsShowCards(false);
+  };
 
   return (
     <Container className={classes.game}>
       <div>
+        <Button variant="contained" color="primary" onClick={onHandOut}>
+          カードを配る
+        </Button>
         <Button
           variant="contained"
           color="primary"
-          onClick={(): void => roundActions.startRound(gameTableId)}
+          onClick={(): void => setIsShowCards(true)}
         >
-          カードを配る
+          全員の手札を開く
         </Button>
         <LeaveButton
           gameTableIdToLeave={gameTableId}
@@ -94,6 +102,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           findName={findName}
           discards={declaration.discards}
           onPlayCard={onPlayCard}
+          isShowCards={isShowCards}
         />
       ) : (
         <DeclarationStage
@@ -103,6 +112,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
           isOpened={round.isOpened}
           onOpen={(): void => roundActions.open(gameTableId)}
           declare={declarationActions.declare}
+          isShowCards={isShowCards}
         />
       )}
     </Container>

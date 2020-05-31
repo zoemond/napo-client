@@ -1,7 +1,13 @@
 import * as React from "react";
 import * as PropTypes from "prop-types";
 
-import { Container, Button, makeStyles, createStyles } from "@material-ui/core";
+import {
+  Container,
+  Button,
+  makeStyles,
+  createStyles,
+  Theme,
+} from "@material-ui/core";
 import { SeatsContext, SeatsDispatchContext } from "../../ducks/seats/Context";
 import { MyGameContext } from "../../ducks/my_game/Context";
 import MyGameSight from "../../domain/MyGameSight";
@@ -19,11 +25,19 @@ import Card from "../../domain/Card";
 
 import { DebugSwitchSeat } from "./DebugSwitchSeat";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     game: {
       display: "flex",
       flexDirection: "column",
+    },
+    gameActions: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    actionButton: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -79,11 +93,12 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
 
   return (
     <Container className={classes.game}>
-      <div>
+      <div className={classes.gameActions}>
         <Button variant="contained" color="primary" onClick={onHandOut}>
           カードを配る
         </Button>
         <Button
+          className={classes.actionButton}
           variant="contained"
           color="primary"
           onClick={(): void => setIsShowCards(true)}

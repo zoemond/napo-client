@@ -7,6 +7,7 @@ export class Seat {
   faceCards: Card[] = [];
   hands: Card[] = [];
   score = 0;
+  isAide = false;
   isLastLapWinner = false;
 
   constructor(
@@ -15,6 +16,7 @@ export class Seat {
     faceCards: Card[] = [],
     hands: Card[] = [],
     score = 0,
+    isAide = false,
     isLastLapWinner = false
   ) {
     this.seatName = seatName;
@@ -22,6 +24,7 @@ export class Seat {
     this.faceCards = faceCards;
     this.hands = hands;
     this.score = score;
+    this.isAide = isAide;
     this.isLastLapWinner = isLastLapWinner;
   }
 
@@ -32,6 +35,7 @@ export class Seat {
       seatObj.faceCards.map(Card.fromObj),
       seatObj.hands.map(Card.fromObj),
       seatObj.score,
+      seatObj.isAide,
       seatObj.isLastLapWinner
     );
   }

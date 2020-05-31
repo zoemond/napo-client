@@ -53,7 +53,9 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
             setPlayCard(card);
             return;
           }
-          if (myGameSight.isMyRound()) {
+          // FIXME: 手札を切ったあと高速でクリックされるとまだ自分のターン判定になり追加で手札を切れてしまう
+          // TODO: リクエスト中のステータスをもって制御する
+          if (myGameSight.isMyTurn()) {
             props.onPlayCard(card, mySeatName);
           }
         }}

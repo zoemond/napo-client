@@ -65,7 +65,7 @@ export default class MyGameSight {
     return this.rightSeat.playCard;
   }
 
-  isMyRound(): boolean {
+  isMyTurn(): boolean {
     if (this.mySeat.playCard) {
       return false;
     }
@@ -73,9 +73,5 @@ export default class MyGameSight {
       return true;
     }
     return this.mySeat.isLastLapWinner;
-  }
-
-  anyonePlayedCards(): boolean {
-    return this.seats.every((seat) => !seat.playCard);
   }
 }

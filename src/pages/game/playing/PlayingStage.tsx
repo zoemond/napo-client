@@ -27,7 +27,8 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
   const [playCard, setPlayCard] = React.useState(initialPlayCard);
   const myGameSight = props.gameSight;
   const findName = props.findName;
-  const mySeatName = myGameSight.mySeat.seatName;
+  const mySeat = myGameSight.mySeat;
+  const mySeatName = mySeat.seatName;
   return (
     <Stage height={stageSize.y} width={stageSize.x}>
       <CoPlayer
@@ -48,6 +49,7 @@ export const PlayingStage: React.FC<PlayingStageProp> = (
         y={myPos().y}
         selectedCards={[playCard]}
         name={findName(mySeatName)}
+        score={mySeat.score}
         pointerdown={(card: Card): void => {
           console.log(card);
           if (!playCard.equals(card)) {

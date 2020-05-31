@@ -51,10 +51,11 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
   const [declaration, setDeclaration] = React.useState(initialDeclaration);
 
   const myGameSight = props.gameSight;
-  if (!myGameSight.mySeat) {
+  const mySeat = myGameSight.mySeat;
+  if (!mySeat) {
     return null;
   }
-  const mySeatName = myGameSight.mySeat.seatName;
+  const mySeatName = mySeat.seatName;
   const findName = props.findName;
   const openCards = props.openCards;
   const [discard1, discard2] = discards;
@@ -103,6 +104,7 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
           y={myPos().y}
           selectedCards={discards}
           name={findName(mySeatName)}
+          score={mySeat.score}
           pointerdown={(card: Card): void => {
             console.log(card);
             if (!isDiscardingStarted) {

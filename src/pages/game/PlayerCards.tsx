@@ -13,6 +13,7 @@ type PlayerCardsProp = {
   x: number;
   y: number;
   name: string;
+  score: number;
   selectedCards?: Card[];
   isDown?: boolean;
   scale?: number;
@@ -53,7 +54,7 @@ export const PlayerCards: React.FC<PlayerCardsProp> = (
         );
       })}
       <Text
-        text={props.name}
+        text={`${props.name} (${props.score || 0})`}
         x={nameX}
         y={nameY + getCardHeight(scale)}
         // typescriptのエラーが出る

@@ -31,6 +31,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.leftSeat.seatName)}
+        score={myGameSight.leftSeat.score}
       />
       <PlayerCards
         hands={myGameSight.frontLeftSeat.hands}
@@ -40,6 +41,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.frontLeftSeat.seatName)}
+        score={myGameSight.frontLeftSeat.score}
       />
       <PlayerCards
         hands={myGameSight.frontRightSeat.hands}
@@ -49,6 +51,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.frontRightSeat.seatName)}
+        score={myGameSight.frontRightSeat.score}
       />
       <PlayerCards
         hands={myGameSight.rightSeat.hands}
@@ -58,6 +61,7 @@ export const CoPlayer: React.FC<GamePageProp> = (props: GamePageProp) => {
         isDown={isDown}
         scale={notMyHandsScale}
         name={findName(myGameSight.rightSeat.seatName)}
+        score={myGameSight.rightSeat.score}
       />
     </React.Fragment>
   );

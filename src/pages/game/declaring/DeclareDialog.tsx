@@ -25,9 +25,9 @@ const range = (start: number, end: number): number[] =>
 
 const faceCardNumbers = range(13, 20);
 const numbers = range(1, 13);
-const allCards = suitValueLabels.reduce((cards, suit) => {
+const allCards = numbers.reduce((cards, number) => {
   return cards.concat(
-    numbers.map((number) => {
+    suitValueLabels.map((suit) => {
       return { card: new Card(suit.value, number), label: suit.label + number };
     })
   );

@@ -5,6 +5,7 @@ export const RoundContext = React.createContext(new RoundState());
 
 type Dispatcher = {
   startRound: (gameTableId: number) => void;
+  calcScoreAndNewRound: (gameTableId: number) => void;
   readRound: (gameTableId: number) => void;
   open: (gameTableId: number) => void;
 };

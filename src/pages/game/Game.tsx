@@ -86,24 +86,33 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const onPlayCard = (card: Card, seatName: SeatName): void => {
     seatsActions.playCard(gameTableId, card, seatName);
   };
-  const onHandOut = (): void => {
+  const onReHandOut = (): void => {
     roundActions.startRound(gameTableId);
     setIsShowCards(false);
   };
-
+  const onNewRound = (): void => {
+    roundActions.calcScoreAndNewRound(gameTableId);
+    setIsShowCards(false);
+  };
   return (
     <Container className={classes.game}>
       <div className={classes.gameActions}>
-        <Button variant="contained" color="primary" onClick={onHandOut}>
-          カードを配る
+        <Button variant="contained" color="primary" onClick={onNewRound}>
+          次のラウンド
         </Button>
         <Button
           className={classes.actionButton}
           variant="contained"
-          color="primary"
           onClick={(): void => setIsShowCards(true)}
         >
           全員の手札を開く
+        </Button>
+        <Button
+          className={classes.actionButton}
+          variant="contained"
+          onClick={onReHandOut}
+        >
+          カードを配り直す(点数計算しない)
         </Button>
         <LeaveButton
           gameTableIdToLeave={gameTableId}

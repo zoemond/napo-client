@@ -36,13 +36,18 @@ export const RoundProvider: React.FC = ({ children }): React.ReactElement => {
   const startRound = (gameTableId: number): void => {
     socket.emit("start_round", { gameTableId });
   };
+  const calcScoreAndNewRound = (gameTableId: number): void => {
+    socket.emit("calc_score_and_new_round", { gameTableId });
+  };
   const open = (gameTableId: number): void => {
     socket.emit("open", { gameTableId });
   };
 
   return (
     <RoundContext.Provider value={state}>
-      <RoundDispatchContext.Provider value={{ startRound, readRound, open }}>
+      <RoundDispatchContext.Provider
+        value={{ startRound, readRound, calcScoreAndNewRound, open }}
+      >
         {children}
       </RoundDispatchContext.Provider>
     </RoundContext.Provider>

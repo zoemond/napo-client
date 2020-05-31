@@ -16,7 +16,8 @@ import { DeclarationStartButton } from "./DeclarationStartButton";
 import { DiscardsButton } from "./DiscardsButton";
 import { DeclareDialog } from "./DeclareDialog";
 
-const initialDiscards = [new Card("spade", 0), new Card("spade", 0)];
+const initialDiscard = new Card("spade", 0);
+const initialDiscards = [initialDiscard, initialDiscard];
 type DeclarationStageProp = {
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
@@ -89,7 +90,11 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
               return;
             }
             if (discard2.equals(card)) {
-              setDiscards([discard2, discard1]);
+              setDiscards([discard1, initialDiscard]);
+              return;
+            }
+            if (discard1.equals(card)) {
+              setDiscards([discard2, initialDiscard]);
               return;
             }
             setDiscards([card, discard1]);

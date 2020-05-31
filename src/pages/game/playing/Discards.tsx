@@ -14,11 +14,10 @@ export const Discards: React.FC<DiscardsProp> = (props: DiscardsProp) => {
   if (!discards) {
     return null;
   }
-  const scale = 0.7;
-  const cardWidth = getCardWidth(scale);
+  const cardWidth = getCardWidth();
 
   const centerX = stageSize.x - cardWidth;
-  const x1 = centerX + cardWidth / 4;
+  const x1 = centerX;
   const x2 = centerX - cardWidth;
   const y = myPos().y;
 

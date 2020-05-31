@@ -13,7 +13,7 @@ export const DiscardsButton: React.FC<DiscardsButtonProp> = (
   return (
     <React.Fragment>
       <Text
-        text="捨てるカードを確定して宣言する"
+        text="カードを捨ててゲームを開始する"
         buttonMode={true}
         interactive={true}
         pointerdown={(): void => {

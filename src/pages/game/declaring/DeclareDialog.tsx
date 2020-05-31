@@ -18,6 +18,7 @@ import Card from "../../../domain/Card";
 import { Trump } from "../../../domain/Trump";
 import { suitValueLabels } from "../../../value_labels/SuiteValueLabels";
 import { trumpValueLabels } from "../../../value_labels/TrumpValueLabels";
+import { Suit } from "../../../domain/Suit";
 
 const range = (start: number, end: number): number[] =>
   [...Array(end - start + 1)].map((_, i) => start + i);
@@ -40,6 +41,20 @@ const jack = { card: new Card("spade", jackNumber), label: "ジャック" };
 const oppositeJack = {
   card: new Card("spade", oppositeJackNumber),
   label: "裏ジャック",
+};
+oppositeJack;
+
+const oppositeSuit = (suit: Suit): Suit => {
+  switch (suit) {
+    case "club":
+      return "spade";
+    case "spade":
+      return "club";
+    case "diamond":
+      return "heart";
+    case "heart":
+      return "diamond";
+  }
 };
 
 const aides = [mighty, jack, oppositeJack].concat(allCards);
@@ -96,11 +111,11 @@ export const DeclareDialog: React.FC<DeclareDialogProp> = (
       }
       return new Card(trump, 11);
     }
-    if (card.number === jackNumber) {
+    if (card.number === oppositeJackNumber) {
       if (trump === "no_trump") {
         throw new Error("ノートラは裏ジャック指名できません");
       }
-      return new Card(trump, 11);
+      return new Card(oppositeSuit(trump), 11);
     }
     return card;
   };

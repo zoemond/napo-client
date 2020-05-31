@@ -18,6 +18,14 @@ import { DeclareDialog } from "./DeclareDialog";
 
 const initialDiscard = new Card("spade", 0);
 const initialDiscards = [initialDiscard, initialDiscard];
+
+const initialDeclaration = new Declaration(
+  0,
+  "no_trump",
+  "fifth_seat",
+  new Card("spade", 0)
+);
+
 type DeclarationStageProp = {
   gameSight: MyGameSight;
   findName: (seatName: SeatName) => string;
@@ -37,39 +45,50 @@ type DeclarationStageProp = {
 export const DeclarationStage: React.FC<DeclarationStageProp> = (
   props: DeclarationStageProp
 ) => {
-  const [isDeclaringStarted, setIsDeclaringStarted] = React.useState(false);
+  const [isDiscardingStarted, setIsDiscardingStarted] = React.useState(false);
   const [openDeclareDialog, setOpenDeclareDialog] = React.useState(false);
   const [discards, setDiscards] = React.useState(initialDiscards);
+  const [declaration, setDeclaration] = React.useState(initialDeclaration);
 
   const myGameSight = props.gameSight;
   if (!myGameSight.mySeat) {
     return null;
   }
   const mySeatName = myGameSight.mySeat.seatName;
-
-  const declareTrump = ({ trump, faceCardNumber, aideCard }): void => {
-    if (trump && faceCardNumber && aideCard) {
-      const [d1, d2] = discards;
-      props.declare(
-        new Declaration(faceCardNumber, trump, mySeatName, aideCard, [d1, d2])
-      );
-
-      setIsDeclaringStarted(false);
-    }
-    setOpenDeclareDialog(false);
-  };
-
   const findName = props.findName;
   const openCards = props.openCards;
   const [discard1, discard2] = discards;
 
-  const hands = isDeclaringStarted
+  const onCloseDeclareDialog = ({ trump, faceCardNumber, aideCard }): void => {
+    if (trump && faceCardNumber && aideCard) {
+      setDeclaration(
+        new Declaration(faceCardNumber, trump, mySeatName, aideCard)
+      );
+      setIsDiscardingStarted(true);
+    }
+    setOpenDeclareDialog(false);
+  };
+  const onDiscards = (): void => {
+    declaration.discards = [discard1, discard2];
+    if (
+      declaration.aideCard.number &&
+      declaration.napoleon &&
+      declaration.trump &&
+      declaration.faceCardNumber &&
+      declaration.discards.every((c) => c.number)
+    ) {
+      props.declare(declaration);
+      setIsDiscardingStarted(false);
+      setDeclaration(initialDeclaration);
+    }
+  };
+  const hands = isDiscardingStarted
     ? [...myGameSight.myHands(), ...openCards]
     : myGameSight.myHands();
 
   const existOpen =
-    !isDeclaringStarted && openCards && openCards.every((c) => c.number);
-  const existDiscard = isDeclaringStarted && discards.every((c) => c.number);
+    !isDiscardingStarted && openCards && openCards.every((c) => c.number);
+  const existDiscard = isDiscardingStarted && discards.every((c) => c.number);
   return (
     <React.Fragment>
       <Stage height={stageSize.y} width={stageSize.x}>
@@ -86,7 +105,7 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
           name={findName(mySeatName)}
           pointerdown={(card: Card): void => {
             console.log(card);
-            if (!isDeclaringStarted) {
+            if (!isDiscardingStarted) {
               return;
             }
             if (discard2.equals(card)) {
@@ -108,21 +127,13 @@ export const DeclarationStage: React.FC<DeclarationStageProp> = (
               isOpened={props.isOpened}
             />
             <DeclarationStartButton
-              onClick={(): void => setIsDeclaringStarted(true)}
+              onClick={(): void => setOpenDeclareDialog(true)}
             />
           </React.Fragment>
         )}
-        {existDiscard && (
-          <DiscardsButton
-            onDiscards={(): void => {
-              setDiscards([discard1, discard2]);
-              setOpenDeclareDialog(true);
-              console.log("on discards", discard1, discard2);
-            }}
-          />
-        )}
+        {existDiscard && <DiscardsButton onDiscards={onDiscards} />}
       </Stage>
-      <DeclareDialog open={openDeclareDialog} onClose={declareTrump} />
+      <DeclareDialog open={openDeclareDialog} onClose={onCloseDeclareDialog} />
     </React.Fragment>
   );
 };

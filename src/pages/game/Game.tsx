@@ -47,7 +47,6 @@ type GamePageProp = {
 };
 export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   const classes = useStyles();
-  const [isShowCards, setIsShowCards] = React.useState(false);
 
   const myGameState = React.useContext(MyGameContext);
   const { seats } = React.useContext(SeatsContext);
@@ -80,6 +79,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
     return <Container>empty</Container>;
   }
 
+  const isShowCards = round.isEnds();
   const gameTable = props.gameTable;
 
   const findName = (seatName: SeatName): string => gameTable.findName(seatName);
@@ -88,11 +88,9 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   };
   const onReHandOut = (): void => {
     roundActions.startRound(gameTableId);
-    setIsShowCards(false);
   };
   const onNewRound = (): void => {
     roundActions.calcScoreAndNewRound(gameTableId);
-    setIsShowCards(false);
   };
   return (
     <Container className={classes.game}>
@@ -103,7 +101,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
         <Button
           className={classes.actionButton}
           variant="contained"
-          onClick={(): void => setIsShowCards(true)}
+          onClick={(): void => roundActions.completeRound(gameTableId)}
         >
           全員の手札を開く
         </Button>

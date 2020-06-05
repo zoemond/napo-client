@@ -27,4 +27,8 @@ export class Round {
     round.cheater = roundObj.cheater;
     return round;
   }
+
+  isEnds(): boolean {
+    return this.state !== "playing";
+  }
 }

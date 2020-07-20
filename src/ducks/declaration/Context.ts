@@ -6,5 +6,6 @@ export const DeclarationContext = React.createContext(new DeclarationState());
 
 type Dispatcher = {
   declare: (declaration: Declaration) => void;
+  readDeclaration: (gameTableId: number) => void;
 };
 export const DeclarationDispatchContext = React.createContext<Dispatcher>(null);

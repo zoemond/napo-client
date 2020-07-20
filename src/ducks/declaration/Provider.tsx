@@ -35,10 +35,13 @@ export const DeclarationProvider: React.FC = ({
   const declare = (declaration: Declaration): void => {
     socket.emit("declare_trump", { ...declaration, gameTableId });
   };
+  const readDeclaration = (gameTableId: number): void => {
+    socket.emit("read_declaration", { gameTableId });
+  };
 
   return (
     <DeclarationContext.Provider value={state}>
-      <DeclarationDispatchContext.Provider value={{ declare }}>
+      <DeclarationDispatchContext.Provider value={{ declare, readDeclaration }}>
         {children}
       </DeclarationDispatchContext.Provider>
     </DeclarationContext.Provider>

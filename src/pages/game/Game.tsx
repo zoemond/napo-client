@@ -62,6 +62,7 @@ export const GamePage: React.FC<GamePageProp> = (props: GamePageProp) => {
   React.useEffect(() => {
     seatsActions.readSeats(gameTableId);
     roundActions.readRound(gameTableId);
+    declarationActions.readDeclaration(gameTableId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
